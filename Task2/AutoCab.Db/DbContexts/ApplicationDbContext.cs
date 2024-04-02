@@ -11,8 +11,26 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
     }
 
+    public new DbSet<User> Users { get; set; }
+    public new DbSet<Role> Roles { get; set; }
+    public DbSet<Car> Cars { get; set; }
+    public DbSet<Trip> Trips { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Trip>()
+            .Property(trip => trip.StartDateTime)
+            .HasColumnType("timestamp with time zone");
+
+        modelBuilder.Entity<Trip>()
+            .Property(trip => trip.EndDateTime)
+            .HasColumnType("timestamp with time zone");
+
+        modelBuilder.HasPostgresEnum<CarStatus>();
+        modelBuilder.HasPostgresEnum<TripStatus>();
+
+        modelBuilder.HasPostgresExtension("postgis");
+
         base.OnModelCreating(modelBuilder);
     }
 }
