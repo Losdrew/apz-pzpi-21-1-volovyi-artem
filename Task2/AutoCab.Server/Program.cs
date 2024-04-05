@@ -10,6 +10,8 @@ builder.Services.AddSetSwagger();
 builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddLogging();
+builder.Services.AddServices();
+builder.Services.AddSetSecurity(builder.Configuration);
 builder.Services.AddCors();
 builder.Services.AddDbSetup(builder.Configuration);
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -21,6 +23,9 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseCors(CorsInjection.PolicyName);
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
