@@ -1,0 +1,77 @@
+﻿using AutoMapper;
+using AutoCab.Server.Controllers.Base;
+using AutoCab.Server.Features.Account;
+using AutoCab.Shared.Dto.Account;
+using AutoCab.Shared.Dto.Error;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+
+namespace AutoCab.Server.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class AccountController : BaseController
+{
+    public AccountController(IMapper mapper, IMediator mediator)
+        : base(mapper, mediator)
+    {
+    }
+
+    /// <summary>
+    /// Create a new administrator account.
+    /// </summary>
+    /// <param name="request">The request to create an administrator account.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <remarks>
+    /// If the operation is successful, it will return an AuthResultDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpPost("administrator/create")]
+    [ProducesResponseType(typeof(AuthResultDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> SignUpAdministrator(CreateAdministratorCommand request,
+        CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(request, cancellationToken);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
+    /// Create a new customer account.
+    /// </summary>
+    /// <param name="request">The request to create a customer account.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <remarks>
+    /// If the operation is successful, it will return an AuthResultDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpPost("customer/create")]
+    [ProducesResponseType(typeof(AuthResultDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> SignUpCustomer(CreateCustomerCommand request, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(request, cancellationToken);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
+    /// Perform user login
+    /// </summary>
+    /// <param name="request">The request to perform user login</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <remarks>
+    /// If the operation is successful, it will return an AuthResultDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpPost("sign-in")]
+    [ProducesResponseType(typeof(AuthResultDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> SignIn(SignInCommand request, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(request, cancellationToken);
+        return ConvertFromServiceResponse(result);
+    }
+}
