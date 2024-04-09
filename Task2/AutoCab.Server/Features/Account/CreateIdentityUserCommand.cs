@@ -8,6 +8,7 @@ using AutoCab.Shared.Errors.ServiceErrors;
 using AutoCab.Shared.ServiceResponseHandling;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AutoCab.Server.Features.Account;
 
@@ -59,12 +60,13 @@ public class CreateIdentityUserCommand : CredentialsDto, IRequest<ServiceRespons
 
             if (createResult.Succeeded)
             {
-                await AssureRoleCreatedAsync(request.Role);
+                var roleId = await AssureRoleCreatedAsync(request.Role);
                 await _userManager.AddToRoleAsync(identityUser, request.Role);
 
                 var result = new CreateIdentityUserResult
                 {
-                    IdentityUser = identityUser
+                    IdentityUser = identityUser,
+                    RoleId = roleId
                 };
 
                 return ServiceResponseBuilder.Success(result);
@@ -80,7 +82,7 @@ public class CreateIdentityUserCommand : CredentialsDto, IRequest<ServiceRespons
             return ServiceResponseBuilder.Failure<CreateIdentityUserResult>(errors);
         }
 
-        private async Task AssureRoleCreatedAsync(string role)
+        private async Task<Guid> AssureRoleCreatedAsync(string role)
         {
             if (!await _roleManager.RoleExistsAsync(role))
             {
@@ -92,7 +94,10 @@ public class CreateIdentityUserCommand : CredentialsDto, IRequest<ServiceRespons
                 };
                 Context.Roles.Add(dbRole);
                 await Context.SaveChangesAsync();
+                return dbRole.Id;
             }
+            var existingRole = await Context.Roles.FirstOrDefaultAsync(r => r.Name == role);
+            return existingRole.Id;
         }
     }
 }

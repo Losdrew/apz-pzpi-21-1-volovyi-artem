@@ -50,7 +50,8 @@ public class CreateAdministratorCommand : CreateUserCommandDto, IRequest<Service
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                PhoneNumber = request.PhoneNumber
+                PhoneNumber = request.PhoneNumber,
+                RoleId = createIdentityResponse.Result.RoleId
             };
 
             Context.Users.Add(administrator);
