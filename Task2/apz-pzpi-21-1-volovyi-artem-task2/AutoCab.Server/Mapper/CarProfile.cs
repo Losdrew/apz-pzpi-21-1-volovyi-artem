@@ -20,5 +20,10 @@ public class CarProfile : Profile
                     X = src.Location.X, 
                     Y = src.Location.Y
                 }));
+
+        CreateMap<UpdateCarCommand, Car>()
+            .ForMember(r => r.Location, opt =>
+                opt.MapFrom(src => src.Location == null ? null :
+                    new Point(new Coordinate(src.Location.X, src.Location.Y))));
     }
 }

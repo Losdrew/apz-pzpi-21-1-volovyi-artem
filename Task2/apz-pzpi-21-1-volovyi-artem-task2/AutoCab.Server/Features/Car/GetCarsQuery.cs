@@ -10,11 +10,11 @@ namespace AutoCab.Server.Features.Car;
 
 public class GetCarsQuery : IRequest<ServiceResponse<ICollection<CarInfoDto>>>
 {
-    public class GetOwnCompanyCarsQueryHandler : 
+    public class GetCarsQueryHandler : 
         ExtendedBaseHandler<GetCarsQuery, ServiceResponse<ICollection<CarInfoDto>>>
     {
-        public GetOwnCompanyCarsQueryHandler(ApplicationDbContext context, IHttpContextAccessor contextAccessor,
-            IMapper mapper, ILogger<GetOwnCompanyCarsQueryHandler> logger)
+        public GetCarsQueryHandler(ApplicationDbContext context, IHttpContextAccessor contextAccessor,
+            IMapper mapper, ILogger<GetCarsQueryHandler> logger)
             : base(context, contextAccessor, mapper, logger)
         {
         }
