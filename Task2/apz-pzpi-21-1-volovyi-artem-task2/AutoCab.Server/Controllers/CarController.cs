@@ -1,5 +1,6 @@
 ﻿using AutoCab.Server.Controllers.Base;
 using AutoCab.Server.Features.Car;
+using AutoCab.Shared.Dto.Address;
 using AutoCab.Shared.Dto.Car;
 using AutoCab.Shared.Dto.Error;
 using AutoCab.Shared.Helpers;
@@ -34,6 +35,24 @@ public class CarController : BaseController
     {
         var query = new GetCarsQuery();
         var result = await Mediator.Send(query);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
+    /// Get a list of cars available for trip.
+    /// </summary>
+    /// <remarks>
+    /// If the operation is successful, it will return an ICollection of CarTripDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpPost("cars-for-trip")]
+    [Authorize(Roles = Roles.Customer)]
+    [ProducesResponseType(typeof(CarForTripDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> GetCarsForTrip(GetCarsForTripQuery request, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(request, cancellationToken);
         return ConvertFromServiceResponse(result);
     }
 

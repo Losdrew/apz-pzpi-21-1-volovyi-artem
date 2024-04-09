@@ -21,6 +21,14 @@ public class CarProfile : Profile
                     Y = src.Location.Y
                 }));
 
+        CreateMap<Car, CarForTripDto>()
+            .ForMember(dest => dest.Location, opt =>
+                opt.MapFrom(src => src.Location == null ? null : new LocationDto
+                {
+                    X = src.Location.X,
+                    Y = src.Location.Y
+                }));
+
         CreateMap<UpdateCarCommand, Car>()
             .ForMember(r => r.Location, opt =>
                 opt.MapFrom(src => src.Location == null ? null :

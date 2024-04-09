@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using AutoCab.Db.DbContexts;
-using AutoCab.Db.Models;
+﻿using AutoCab.Db.DbContexts;
 using AutoCab.Server.Extensions;
 using AutoCab.Server.Features.Base;
 using AutoCab.Shared.Dto.Trip;
 using AutoCab.Shared.Errors.ServiceErrors;
 using AutoCab.Shared.ServiceResponseHandling;
+using AutoMapper;
 using MediatR;
 
 namespace AutoCab.Server.Features.Trip;
@@ -54,7 +53,7 @@ public class CreateTripCommand : CreateTripCommandDto, IRequest<ServiceResponse<
             await Context.SaveChangesAsync(cancellationToken);
 
             var result = Mapper.Map<TripInfoDto>(newTrip);
-            result.CustomerId = customer.Id;
+            result.UserId = customer.Id;
 
             return ServiceResponseBuilder.Success(result);
         }
