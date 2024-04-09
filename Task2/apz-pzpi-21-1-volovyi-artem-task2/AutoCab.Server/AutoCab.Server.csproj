@@ -17,13 +17,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Features\Trip\**" />
-    <Content Remove="Features\Trip\**" />
-    <EmbeddedResource Remove="Features\Trip\**" />
-    <None Remove="Features\Trip\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="ClosedXML" Version="0.102.1" />
