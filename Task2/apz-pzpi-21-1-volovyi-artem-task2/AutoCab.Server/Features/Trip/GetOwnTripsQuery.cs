@@ -47,9 +47,10 @@ public class GetOwnTripsQuery : IRequest<ServiceResponse<ICollection<TripInfoDto
             }
 
             var trip = Context.Trips
-                .Include(o => o.StartAddress)
-                .Include(o => o.DestinationAddress)
-                .Where(o => o.UserId == customer.Id);
+                .Include(t => t.StartAddress)
+                .Include(t => t.DestinationAddress)
+                .Include(t => t.Services)
+                .Where(t => t.UserId == customer.Id);
 
             var result = Mapper.Map<ICollection<TripInfoDto>>(trip);
             return ServiceResponseBuilder.Success(result);

@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Car> Cars { get; set; }
     public DbSet<Trip> Trips { get; set; }
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<Service> Services { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

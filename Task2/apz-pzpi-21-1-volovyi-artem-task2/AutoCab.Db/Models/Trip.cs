@@ -18,6 +18,8 @@ public class Trip : Entity
 
     public Guid UserId { get; set; }
     public User? User { get; set; }
+
+    public ICollection<Service>? Services { get; set; }
 }
 
 public enum TripStatus
