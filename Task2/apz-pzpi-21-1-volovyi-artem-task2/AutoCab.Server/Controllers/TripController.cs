@@ -77,4 +77,26 @@ public class TripController : BaseController
         var result = await Mediator.Send(request, cancellationToken);
         return ConvertFromServiceResponse(result);
     }
+
+    /// <summary>
+    /// Update trip services.
+    /// </summary>
+    /// <param name="request">The request to update trip services.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <remarks>
+    /// If the operation is successful, it will return a TripInfoDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpPost("update-services")]
+    [Authorize(Roles = Roles.Customer)]
+    [ProducesResponseType(typeof(TripInfoDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    [ProducesResponseType(typeof(string), 401)]
+    [ProducesResponseType(typeof(string), 403)]
+    public async Task<IActionResult> UpdateTripServices(UpdateTripServicesCommand request, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(request, cancellationToken);
+        return ConvertFromServiceResponse(result);
+    }
 }
