@@ -31,4 +31,11 @@ public class TripServiceError : ServiceError
         ErrorMessage = "Error when editing service",
         Code = 4
     };
+
+     public static TripServiceError ServiceDeleteError = new()
+    {
+        Header = "Delete service error",
+        ErrorMessage = "Error when deleting service",
+        Code = 5
+    };
 }

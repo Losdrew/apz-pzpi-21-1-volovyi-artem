@@ -1,7 +1,5 @@
 using AutoCab.Server.Controllers.Base;
 using AutoCab.Server.Features.Service;
-using AutoCab.Server.Features.Service;
-using AutoCab.Shared.Dto.Service;
 using AutoCab.Shared.Dto.Error;
 using AutoCab.Shared.Dto.Service;
 using AutoCab.Shared.Helpers;
@@ -78,6 +76,28 @@ public class ServiceController : BaseController
     public async Task<IActionResult> EditService(EditServiceCommand request, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(request, cancellationToken);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
+    /// Delete existing service.
+    /// </summary>
+    /// <param name="serviceId">The request to delete service.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <remarks>
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpDelete("delete")]
+    [Authorize(Roles = Roles.Administrator)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> DeleteService(Guid serviceId, CancellationToken cancellationToken)
+    {
+        var command = new DeleteServiceCommand
+        {
+            ServiceId = serviceId
+        };
+        var result = await Mediator.Send(command, cancellationToken);
         return ConvertFromServiceResponse(result);
     }
 }
