@@ -1,6 +1,5 @@
 ﻿using AutoCab.Server.Controllers.Base;
 using AutoCab.Server.Features.Car;
-using AutoCab.Shared.Dto.Address;
 using AutoCab.Shared.Dto.Car;
 using AutoCab.Shared.Dto.Error;
 using AutoCab.Shared.Helpers;
@@ -101,6 +100,24 @@ public class CarController : BaseController
     }
 
     /// <summary>
+    /// Update existing car.
+    /// </summary>
+    /// <param name="request">The request to update car.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <remarks>
+    /// If the operation is successful, it will return an success result.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpPost("update")]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> UpdateCar(UpdateCarCommand request, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(request, cancellationToken);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
     /// Delete existing car.
     /// </summary>
     /// <param name="carId">The request to delete car.</param>
@@ -119,24 +136,6 @@ public class CarController : BaseController
             CarId = carId
         };
         var result = await Mediator.Send(command, cancellationToken);
-        return ConvertFromServiceResponse(result);
-    }
-
-    /// <summary>
-    /// Update existing car.
-    /// </summary>
-    /// <param name="request">The request to update car.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <remarks>
-    /// If the operation is successful, it will return an success result.
-    /// If there is a bad request, it will return an ErrorDto.
-    /// </remarks>
-    /// <returns>An IActionResult representing the result of the operation.</returns>
-    [HttpPost("update")]
-    [ProducesResponseType(typeof(ErrorDto), 400)]
-    public async Task<IActionResult> UpdateCar(UpdateCarCommand request, CancellationToken cancellationToken)
-    {
-        var result = await Mediator.Send(request, cancellationToken);
         return ConvertFromServiceResponse(result);
     }
 }

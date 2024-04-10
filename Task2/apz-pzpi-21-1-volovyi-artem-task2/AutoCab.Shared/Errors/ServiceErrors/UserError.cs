@@ -24,4 +24,25 @@ public class UserError : ServiceError
         ErrorMessage = "You don't have access",
         Code = 3
     };
+
+    public static UserError GetUsersError = new()
+    {
+        Header = "Get user error",
+        ErrorMessage = "Error when getting a list of users",
+        Code = 4
+    };
+
+    public static UserError UserEditError = new()
+    {
+        Header = "Edit user error",
+        ErrorMessage = "Error when editing a user",
+        Code = 5
+    };
+
+    public static UserError UserDeleteError = new()
+    {
+        Header = "Delete user error",
+        ErrorMessage = "Error when deleting a user",
+        Code = 6
+    };
 }
