@@ -1,59 +1,106 @@
 ﻿using AutoCab.Db.DbContexts;
+using AutoCab.Server.Controllers.Base;
 using AutoCab.Server.Extensions;
 using AutoCab.Shared.Dto.Error;
 using AutoCab.Shared.Helpers;
-using ClosedXML.Excel;
+using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Text;
 
 namespace AutoCab.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DataController
+public class DataController : BaseController
 {
     private readonly ApplicationDbContext _context;
+    private readonly IConfiguration _configuration;
 
-    public DataController(ApplicationDbContext context)
+    public DataController(IMapper mapper, IMediator mediator,
+        ApplicationDbContext context, IConfiguration configuration)
+        : base(mapper, mediator)
     {
         _context = context;
+        _configuration = configuration;
     }
 
-    [HttpGet("export-data")]
+    [HttpGet("export-database")]
     [Authorize(Roles = Roles.Administrator)]
     [ProducesResponseType(typeof(FileContentResult), 200)]
     [ProducesResponseType(typeof(ErrorDto), 400)]
-    [FileDownload(FileName = "Data.xlsx")]
-    public async Task<IActionResult> ExportData()
+    [FileDownload(FileName = "database.tar")]
+    public IActionResult ExportDatabase()
     {
-        var users = _context.Users.ToList();
-        var roles = _context.Roles.ToList();
-        var cars = _context.Cars.ToList();
-        var trips = _context.Trips.ToList();
-        var addresses = _context.Addresses.ToList();
-        var services = _context.Services.ToList();
-
-        using (var workbook = new XLWorkbook())
+        var startInfo = new ProcessStartInfo
         {
-            AddWorksheet(workbook, "Users", users);
-            AddWorksheet(workbook, "Roles", roles);
-            AddWorksheet(workbook, "Cars", cars);
-            AddWorksheet(workbook, "Trips", trips);
-            AddWorksheet(workbook, "Addresses", addresses);
-            AddWorksheet(workbook, "Services", services);
+            FileName = @"C:\Program Files\PostgreSQL\16\bin\pg_dump.exe",
+            Arguments = $"-U {_configuration["DatabaseUsername"]} -F t {_configuration["DatabaseName"]}",
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
 
-            using (var stream = new MemoryStream())
-            {
-                workbook.SaveAs(stream);
-                var content = stream.ToArray();
-                return new FileContentResult(content, "application/vnd.ms-excel");
-            }
-        }
+        startInfo.Environment["PGPASSWORD"] = _configuration["DatabasePassword"];
+
+        var process = new Process { StartInfo = startInfo };
+        process.Start();
+
+        using var ms = new MemoryStream();
+        process.StandardOutput.BaseStream.CopyTo(ms);
+
+        var bytes = ms.ToArray();
+        return new FileContentResult(bytes, "application/octet-stream");
     }
 
-    private void AddWorksheet<T>(IXLWorkbook workbook, string worksheetName, IList<T> data)
+    [HttpPost("import-database")]
+    [Authorize(Roles = Roles.Administrator)]
+    public async Task<IActionResult> ImportDatabase(IFormFile file)
     {
-        var worksheet = workbook.Worksheets.Add(worksheetName);
-        worksheet.Cell(1, 1).InsertTable(data);
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("No file uploaded");
+        }
+
+        var tempFilePath = Path.GetTempFileName();
+
+        using (var stream = System.IO.File.Create(tempFilePath))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var startInfo = new ProcessStartInfo
+        {
+            FileName = @"C:\Program Files\PostgreSQL\16\bin\pg_restore.exe",
+            Arguments = $"-U {_configuration["DatabaseUsername"]} -c -d {_configuration["DatabaseName"]} -F t {tempFilePath}",
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardError = true
+        };
+
+        startInfo.Environment["PGPASSWORD"] = _configuration["DatabasePassword"];
+
+        var process = new Process
+        {
+            StartInfo = startInfo,
+            EnableRaisingEvents = true
+        };
+        var stderr = new StringBuilder();
+        process.ErrorDataReceived += (sender, args) => stderr.AppendLine(args.Data);
+
+        process.Start();
+        process.BeginErrorReadLine();
+        process.WaitForExit();
+
+        System.IO.File.Delete(tempFilePath);
+
+        if (process.ExitCode != 0)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, stderr.ToString());
+        }
+
+        return Ok("Database imported successfully");
     }
 }
