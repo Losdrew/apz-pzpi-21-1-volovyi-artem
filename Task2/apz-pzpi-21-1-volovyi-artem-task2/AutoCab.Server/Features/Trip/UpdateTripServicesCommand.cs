@@ -44,7 +44,7 @@ public class UpdateTripServicesCommand : UpdateTripServicesCommandDto, IRequest<
                 .Include(t => t.DestinationAddress)
                 .FirstOrDefaultAsync(t => t.Id == request.TripId, cancellationToken);
 
-            if (trip == null || trip.Status != Db.Models.TripStatus.InProgress)
+            if (trip == null)
             {
                 return ServiceResponseBuilder.Failure<TripInfoDto>(TripError.TripNotFound);
             }
