@@ -103,8 +103,8 @@ public class GetCarsForTripQuery : GetCarsForTripQueryDto, IRequest<ServiceRespo
 
         private decimal CalculatePrice(decimal distance)
         {
-            decimal pricePerKm = 1.5M;
-            return distance * pricePerKm;
+            decimal pricePerM = 0.025M;
+            return distance * pricePerM;
         }
     }
 }
