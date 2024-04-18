@@ -138,4 +138,48 @@ public class CarController : BaseController
         var result = await Mediator.Send(command, cancellationToken);
         return ConvertFromServiceResponse(result);
     }
+
+    /// <summary>
+    /// Toggle car's door.
+    /// </summary>
+    /// <param name="request">The request to toggle car's door.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <remarks>
+    /// If the operation is successful, it will return an CarInfoDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpPost("toggle-door")]
+    [Authorize(Roles = Roles.Administrator + "," + Roles.Customer)]
+    [ProducesResponseType(typeof(CarInfoDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    [ProducesResponseType(typeof(string), 401)]
+    [ProducesResponseType(typeof(string), 403)]
+    public async Task<IActionResult> ToggleCarDoor(ToggleCarDoorCommand request, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(request, cancellationToken);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
+    /// Get car door status.
+    /// </summary>
+    /// <param name="deviceId">Car's device id</param>
+    /// <remarks>
+    /// If the operation is successful, it will return an success result.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpGet("door-status")]
+    [ProducesResponseType(typeof(string), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> GetCarDoorStatus([FromQuery] string? deviceId)
+    {
+        var query = new GetCarDoorStatusQuery
+        {
+            DeviceId = deviceId
+        };
+        var result = await Mediator.Send(query);
+        return ConvertFromServiceResponse(result);
+    }
 }

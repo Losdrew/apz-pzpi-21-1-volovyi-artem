@@ -15,11 +15,11 @@ public class ToggleCarDoorCommand : IRequest<ServiceResponse<CarInfoDto>>
 {
     public Guid CarId { get; set; }
 
-    public class ToggleCarCargoLidCommandHandler :
+    public class ToggleCarDoorCommandHandler :
         ExtendedBaseHandler<ToggleCarDoorCommand, ServiceResponse<CarInfoDto>>
     {
-        public ToggleCarCargoLidCommandHandler(ApplicationDbContext context, IHttpContextAccessor contextAccessor,
-            IMapper mapper, ILogger<ToggleCarCargoLidCommandHandler> logger)
+        public ToggleCarDoorCommandHandler(ApplicationDbContext context, IHttpContextAccessor contextAccessor,
+            IMapper mapper, ILogger<ToggleCarDoorCommandHandler> logger)
             : base(context, contextAccessor, mapper, logger)
         {
         }

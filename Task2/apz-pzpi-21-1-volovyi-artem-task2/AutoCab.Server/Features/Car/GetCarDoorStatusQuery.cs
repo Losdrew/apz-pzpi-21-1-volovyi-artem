@@ -12,11 +12,11 @@ public class GetCarDoorStatusQuery : IRequest<ServiceResponse<string>>
 {
     public string? DeviceId { get; set; }
 
-    public class GetCarCargoLidStatusQueryHandler : 
+    public class GetCarDoorStatusQueryHandler : 
         ExtendedBaseHandler<GetCarDoorStatusQuery, ServiceResponse<string>>
     {
-        public GetCarCargoLidStatusQueryHandler(ApplicationDbContext context, IHttpContextAccessor contextAccessor,
-            IMapper mapper, ILogger<GetCarCargoLidStatusQueryHandler> logger)
+        public GetCarDoorStatusQueryHandler(ApplicationDbContext context, IHttpContextAccessor contextAccessor,
+            IMapper mapper, ILogger<GetCarDoorStatusQueryHandler> logger)
             : base(context, contextAccessor, mapper, logger)
         {
         }
@@ -45,8 +45,8 @@ public class GetCarDoorStatusQuery : IRequest<ServiceResponse<string>>
                 return ServiceResponseBuilder.Failure<string>(CarError.CarNotFound);
             }
 
-            var lidStatus = car.IsDoorOpen ? DoorStatus.DoorOpen : DoorStatus.DoorClosed;
-            return ServiceResponseBuilder.Success(lidStatus);
+            var doorStatus = car.IsDoorOpen ? DoorStatus.DoorOpen : DoorStatus.DoorClosed;
+            return ServiceResponseBuilder.Success(doorStatus);
         }
     }
 }
