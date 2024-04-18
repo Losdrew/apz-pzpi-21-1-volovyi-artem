@@ -12,6 +12,7 @@ public class Car : Entity
     public int PassengerSeatsNum { get; set; }
     public decimal Temperature { get; set; }
     public decimal Fuel { get; set; }
+    public bool IsDoorOpen { get; set; }
     public string? DeviceId { get; set; }
 
     [Column(TypeName="geometry (point)")]
