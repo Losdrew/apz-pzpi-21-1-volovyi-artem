@@ -182,4 +182,26 @@ public class CarController : BaseController
         var result = await Mediator.Send(query);
         return ConvertFromServiceResponse(result);
     }
+
+    /// <summary>
+    /// Stor car.
+    /// </summary>
+    /// <param name="request">The request to stop car.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <remarks>
+    /// If the operation is successful, it will return an CarInfoDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpPost("stop-car")]
+    [Authorize(Roles = Roles.Customer)]
+    [ProducesResponseType(typeof(CarInfoDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    [ProducesResponseType(typeof(string), 401)]
+    [ProducesResponseType(typeof(string), 403)]
+    public async Task<IActionResult> StopCar(StopCarCommand request, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(request, cancellationToken);
+        return ConvertFromServiceResponse(result);
+    }
 }
