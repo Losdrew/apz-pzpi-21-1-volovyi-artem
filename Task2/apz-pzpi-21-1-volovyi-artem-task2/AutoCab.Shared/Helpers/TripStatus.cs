@@ -4,6 +4,7 @@ public enum TripStatus
 {
     Created,
     InProgress,
+    WaitingForPassenger,
     Completed,
     Cancelled
 }
