@@ -396,3 +396,10 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Arduino Libraries
+Task3/AutoCab.IoT/libraries/ArduinoJson
+Task3/AutoCab.IoT/libraries/ArduinoUniqueID
+Task3/AutoCab.IoT/libraries/TinyGPS
+Task3/AutoCab.IoT/libraries/TinyGPSPlus
+Task3/AutoCab.IoT/libraries/TinyGPSPlusPlus
