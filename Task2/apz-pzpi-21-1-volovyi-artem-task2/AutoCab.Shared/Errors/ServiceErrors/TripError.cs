@@ -38,4 +38,11 @@ public class TripError : ServiceError
         ErrorMessage = "Error when updating trip",
         Code = 5
     };
+
+    public static TripError GetTripError = new()
+    {
+        Header = "Get trip error",
+        ErrorMessage = "Error when getting trip",
+        Code = 6
+    };
 }
