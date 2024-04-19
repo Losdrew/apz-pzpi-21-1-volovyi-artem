@@ -5,6 +5,7 @@ using AutoCab.Shared.Dto.Geolocation;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace AutoCab.Server.Controllers;
 
@@ -43,13 +44,36 @@ public class GeolocationController : BaseController
         return ConvertFromServiceResponse(result);
     }
 
+    /// <summary>
+    /// Get route to the nearest gas station.
+    /// </summary>
+    /// <remarks>
+    /// If the operation is successful, it will return a RoutesDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <param name="location">The origin location</param>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpGet("gas-station-route/{location}")]
+    [ProducesResponseType(typeof(RoutesDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> GetNearestGasStationRoute([FromRoute] string location)
+    {
+        var query = new GetGasStationRouteQuery
+        {
+            Location = ParseLocation(location),
+        };
+
+        var result = await Mediator.Send(query);
+        return ConvertFromServiceResponse(result);
+    }
+
     private LocationDto ParseLocation(string locationString)
     {
         var location = new LocationDto();
         var coordinates = locationString.Split(',');
 
-        location.X = double.Parse(coordinates[0]);
-        location.Y = double.Parse(coordinates[1]);
+        location.X = double.Parse(coordinates[0], CultureInfo.InvariantCulture);
+        location.Y = double.Parse(coordinates[1], CultureInfo.InvariantCulture);
 
         return location;
     }

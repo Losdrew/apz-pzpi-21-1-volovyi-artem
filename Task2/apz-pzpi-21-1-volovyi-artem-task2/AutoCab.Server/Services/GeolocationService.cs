@@ -12,7 +12,7 @@ namespace AutoCab.Server.Services;
 public class GeolocationService : IGeolocationService
 {
     private const string PositionStackBaseUrl = "http://api.positionstack.com/v1/forward";
-    private const string MapboxBaseUrl = "https://api.mapbox.com/directions/v5/mapbox/driving";
+    private const string MapboxBaseUrl = "https://api.mapbox.com";
 
     private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
@@ -54,7 +54,7 @@ public class GeolocationService : IGeolocationService
         var location = string.Format(CultureInfo.InvariantCulture, "{0},{1};{2},{3}", 
             firstPoint.X, firstPoint.Y, secondPoint.X, secondPoint.Y);
         var parameters = $"geometries=geojson&overview=simplified&steps=true&access_token={accessToken}";
-        var endpoint = $"{MapboxBaseUrl}/{location}?{parameters}";
+        var endpoint = $"{MapboxBaseUrl}/directions/v5/mapbox/driving/{location}?{parameters}";
 
         var httpResponseMessage = await _httpClient.GetAsync(endpoint);
         var json = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -66,6 +66,52 @@ public class GeolocationService : IGeolocationService
 
         var result = JsonConvert.DeserializeObject<RoutesDto>(json);
         return ServiceResponseBuilder.Success(result);
+    }
+
+    public async Task<ServiceResponse<RoutesDto>> GetNearestGasStationRoute(LocationDto currentLocation)
+    {
+        var accessToken = _configuration.GetRequiredSection("MapBoxAccessToken").Value;
+        var location = string.Format(CultureInfo.InvariantCulture, "{0},{1}", currentLocation.X, currentLocation.Y);
+        var parameters = $"search/searchbox/v1/suggest?q=gas+station&language=en&limit=1&" +
+            $"navigation_profile=driving&origin={location}&session_token=&access_token={accessToken}";
+        var endpoint = $"{MapboxBaseUrl}/{parameters}";
+
+        var httpResponseMessage = await _httpClient.GetAsync(endpoint);
+        var json = await httpResponseMessage.Content.ReadAsStringAsync();
+
+        if (!httpResponseMessage.IsSuccessStatusCode)
+        {
+            return HandleError(json).MapErrorResult<RoutesDto>();
+        }
+
+        var suggestionResult = JsonConvert.DeserializeObject<SuggestionResult>(json);
+
+        var mapboxId = suggestionResult.Suggestions.First().Mapbox_Id;
+
+        parameters = $"search/searchbox/v1/retrieve/{mapboxId}?session_token=&access_token={accessToken}";
+        endpoint = $"{MapboxBaseUrl}/{parameters}";
+
+        httpResponseMessage = await _httpClient.GetAsync(endpoint);
+        json = await httpResponseMessage.Content.ReadAsStringAsync();
+
+        if (!httpResponseMessage.IsSuccessStatusCode)
+        {
+            return HandleError(json).MapErrorResult<RoutesDto>();
+        }
+
+        var featureResult = JsonConvert.DeserializeObject<FeatureResult>(json);
+
+        var featureCoordinates = featureResult.Features.First().Geometry.Coordinates;
+
+        var gasStationLocation = new LocationDto
+        {
+            X = featureCoordinates[0],
+            Y = featureCoordinates[1]
+        };
+
+        var route = await GetRoutesAsync(currentLocation, gasStationLocation);
+
+        return ServiceResponseBuilder.Success(route.Result);
     }
 
     private string GetFullAddress(AddressDto address)
