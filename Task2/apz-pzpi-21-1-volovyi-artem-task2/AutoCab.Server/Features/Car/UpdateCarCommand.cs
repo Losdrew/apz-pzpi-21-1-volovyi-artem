@@ -51,8 +51,9 @@ public class UpdateCarCommand : UpdateCarCommandDto, IRequest<ServiceResponse>
             {
                 trip.Status = car.Status switch
                 {
-                    CarStatus.EnRoute => TripStatus.Created,
+                    CarStatus.EnRoute => TripStatus.InProgress,
                     CarStatus.OnTrip => TripStatus.InProgress,
+                    CarStatus.WaitingForPassenger => TripStatus.WaitingForPassenger,
                     _ => trip.Status
                 };
             }
