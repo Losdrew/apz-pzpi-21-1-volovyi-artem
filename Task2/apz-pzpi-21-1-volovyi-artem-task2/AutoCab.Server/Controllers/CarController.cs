@@ -184,6 +184,28 @@ public class CarController : BaseController
     }
 
     /// <summary>
+    /// Get car status.
+    /// </summary>
+    /// <param name="deviceId">Car's device id</param>
+    /// <remarks>
+    /// If the operation is successful, it will return an success result.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpGet("status")]
+    [ProducesResponseType(typeof(string), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> GetCarStatus([FromQuery] string? deviceId)
+    {
+        var query = new GetCarStatusQuery
+        {
+            DeviceId = deviceId
+        };
+        var result = await Mediator.Send(query);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
     /// Stop car.
     /// </summary>
     /// <param name="request">The request to stop car.</param>
