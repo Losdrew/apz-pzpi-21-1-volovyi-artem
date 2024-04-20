@@ -184,7 +184,7 @@ public class CarController : BaseController
     }
 
     /// <summary>
-    /// Stor car.
+    /// Stop car.
     /// </summary>
     /// <param name="request">The request to stop car.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
