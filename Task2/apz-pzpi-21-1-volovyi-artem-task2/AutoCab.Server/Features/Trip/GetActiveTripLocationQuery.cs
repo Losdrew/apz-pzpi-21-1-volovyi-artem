@@ -51,7 +51,7 @@ public class GetActiveTripLocationQuery : IRequest<ServiceResponse<LocationDto>>
                 .Include(t => t.Car)
                 .FirstOrDefaultAsync(t => t.Car.DeviceId.Equals(request.DeviceId), cancellationToken);
 
-            if (trip == null || trip.Status != TripStatus.Completed || trip.Status != TripStatus.Cancelled)
+            if (trip == null || trip.Status == TripStatus.Completed || trip.Status == TripStatus.Cancelled)
             {
                 return ServiceResponseBuilder.Failure<LocationDto>(TripError.TripNotFound);
             }

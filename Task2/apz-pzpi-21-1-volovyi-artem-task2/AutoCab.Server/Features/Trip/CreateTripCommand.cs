@@ -48,6 +48,7 @@ public class CreateTripCommand : CreateTripCommandDto, IRequest<ServiceResponse<
             var newTrip = Mapper.Map<Db.Models.Trip>(request);
             newTrip.User = customer;
             newTrip.StartDateTime = DateTime.UtcNow;
+            newTrip.Status = Db.Models.TripStatus.Created;
             Context.Add(newTrip);
 
             await Context.SaveChangesAsync(cancellationToken);
