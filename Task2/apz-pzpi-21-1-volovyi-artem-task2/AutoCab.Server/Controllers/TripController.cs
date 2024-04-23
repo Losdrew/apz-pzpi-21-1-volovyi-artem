@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AutoCab.Shared.Dto.Geolocation;
+using AutoCab.Shared.Dto.Service;
 
 namespace AutoCab.Server.Controllers;
 
@@ -115,6 +116,27 @@ public class TripController : BaseController
     public async Task<IActionResult> GetActiveTripLocation([FromQuery] string deviceId)
     {
         var query = new GetActiveTripLocationQuery
+        {
+            DeviceId = deviceId
+        };
+        var result = await Mediator.Send(query);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
+    /// Get car's active trip services.
+    /// </summary>
+    /// <remarks>
+    /// If the operation is successful, it will return a ServicesCommandsDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpGet("active-trip-services")]
+    [ProducesResponseType(typeof(ServicesCommandsDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> GetActiveTripServices([FromQuery] string deviceId)
+    {
+        var query = new GetActiveTripServicesQuery
         {
             DeviceId = deviceId
         };
