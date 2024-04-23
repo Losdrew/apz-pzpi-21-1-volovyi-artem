@@ -403,3 +403,4 @@ Task3/AutoCab.IoT/libraries/ArduinoUniqueID
 Task3/AutoCab.IoT/libraries/TinyGPS
 Task3/AutoCab.IoT/libraries/TinyGPSPlus
 Task3/AutoCab.IoT/libraries/TinyGPSPlusPlus
+Task3/AutoCab.IoT/libraries/MPU6050
