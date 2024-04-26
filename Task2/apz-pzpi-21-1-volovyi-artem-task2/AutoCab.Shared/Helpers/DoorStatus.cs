@@ -2,6 +2,6 @@
 
 public static class DoorStatus
 {
-    public const string DoorOpen = "DOOR_OPEN";
-    public const string DoorClosed = "DOOR_CLOSED";
+    public const string DoorOpen = "DO";
+    public const string DoorClosed = "DC";
 }
