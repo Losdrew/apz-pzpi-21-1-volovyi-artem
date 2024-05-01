@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCab.Db", "Task2\apz-pzp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCab.Shared", "Task2\apz-pzpi-21-1-volovyi-artem-task2\AutoCab.Shared\AutoCab.Shared.csproj", "{4EB8E819-F586-44E2-B447-4F36A0BD7ECC}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "autocab.client", "Task4\autocab.client\autocab.client.esproj", "{B757D623-B292-4485-B8EA-849FA4CD2362}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,16 +29,12 @@ Global
 		{4EB8E819-F586-44E2-B447-4F36A0BD7ECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EB8E819-F586-44E2-B447-4F36A0BD7ECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EB8E819-F586-44E2-B447-4F36A0BD7ECC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{102627AC-5D12-4638-9867-4ED9359CF3D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{102627AC-5D12-4638-9867-4ED9359CF3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{102627AC-5D12-4638-9867-4ED9359CF3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{102627AC-5D12-4638-9867-4ED9359CF3D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2A5F5DC7-8D8D-43BA-8D1D-21EA48AB982B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A5F5DC7-8D8D-43BA-8D1D-21EA48AB982B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A5F5DC7-8D8D-43BA-8D1D-21EA48AB982B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{2A5F5DC7-8D8D-43BA-8D1D-21EA48AB982B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A5F5DC7-8D8D-43BA-8D1D-21EA48AB982B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2A5F5DC7-8D8D-43BA-8D1D-21EA48AB982B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{B757D623-B292-4485-B8EA-849FA4CD2362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B757D623-B292-4485-B8EA-849FA4CD2362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B757D623-B292-4485-B8EA-849FA4CD2362}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B757D623-B292-4485-B8EA-849FA4CD2362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B757D623-B292-4485-B8EA-849FA4CD2362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B757D623-B292-4485-B8EA-849FA4CD2362}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
