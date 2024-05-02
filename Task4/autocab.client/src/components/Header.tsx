@@ -3,6 +3,7 @@ import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } 
 import React from 'react';
 import { Link as LinkRouter } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import { Roles } from '../interfaces/enums';
 
 export function Header() {
   const { auth, setAuth } = useAuth();
@@ -41,6 +42,17 @@ export function Header() {
         >
           AutoCab
         </Typography>
+        <Box sx={{ flexGrow: 1, display: { md: 'flex' }, mr: 1 }}>
+          {auth.role === Roles.Administrator && (
+            <Button
+              component={LinkRouter}
+              to="/admin-dashboard"
+              sx={{ my: 2, color: 'white' }}
+            >
+              {"Admin Dashboard"}
+            </Button>
+          )}
+        </Box>
         {!auth.userId && (
           <Button
             variant="contained"
