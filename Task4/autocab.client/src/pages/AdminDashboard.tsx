@@ -3,18 +3,22 @@ import { GridColDef, GridRenderCellParams, GridValueFormatterParams } from '@mui
 import { useEffect, useState } from 'react';
 import CarEditToolbar from '../components/CarEditToolbar';
 import CarLocationModal from '../components/CarLocationModal';
+import EditToolbar from '../components/EditToolbar';
 import EditableDataGrid from '../components/EditableDataGrid';
+import authService from '../features/authService';
 import carService from '../features/carService';
 import dataService from '../features/dataService';
+import userService from '../features/userService';
 import useAuth from '../hooks/useAuth';
 import useStatusConverter from '../hooks/useStatusConverter';
 import { CarStatus } from '../interfaces/enums';
-import { GridCar } from '../interfaces/grid';
+import { GridCar, GridUser } from '../interfaces/grid';
 
 const AdminDashboard = () => {
   const { auth } = useAuth();
   const { CarStatusColors, CarStatusLabels } = useStatusConverter();
   const [cars, setCars] = useState<GridCar[]>();
+  const [users, setUsers] = useState<GridUser[]>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'success' | 'error' | null>(null);
  
@@ -44,7 +48,17 @@ const AdminDashboard = () => {
       }
     };
 
+    const fetchUsers = async () => {
+      try {
+        const response = await userService.getUsers(auth.bearer!);
+        setUsers(response);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
     fetchCars();
+    fetchUsers();
   }, [auth.bearer]) 
 
   const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -79,12 +93,42 @@ const AdminDashboard = () => {
           );
         }
       }
+      for (const user of users) {
+        if (user.isNew) {
+          if (user.role === 'customer') {
+            await authService.signUpCustomer(
+              user.email,
+              'password',
+              user.firstName,
+              user.lastName,
+              user.phoneNumber
+            );
+          }
+          if (user.role === 'admin') {
+            await authService.signUpAdmin(
+              user.email,
+              'password',
+              user.firstName,
+              user.lastName,
+              user.phoneNumber
+            );
+          }
+        }
+      }
       setSaveStatus('success');
     } catch (error) {
       console.error('Error:', error);
       setSaveStatus('error');
     }
   };
+
+  const userColumns: GridColDef[] = [
+    { field: 'email', headerName: "Email", width: 170, editable: true },
+    { field: 'firstName', headerName: "First Name", width: 170, editable: true },
+    { field: 'lastName', headerName: "Last Name", width: 170, editable: true },
+    { field: 'phoneNumber', headerName: "Phone Number", width: 170, editable: true },
+    { field: 'role', headerName: "Role", width: 100, editable: true }
+  ];
 
   const carColumns: GridColDef[] = [
     { field: 'brand', headerName: "Brand", width: 170, editable: true },
@@ -161,6 +205,21 @@ const AdminDashboard = () => {
             </Button>
           </Box>
         </Box>
+        <Divider />
+        <Typography variant="h6" gutterBottom mt={2} mb={2}>
+          {"Users"}
+        </Typography>
+        <EditableDataGrid
+          toolbar={EditToolbar}
+          toolbarProps={{
+            setModal: setIsModalOpen,
+            rows: users || [],
+            setRows: setUsers
+          }}
+          rows={users || []}
+          setRows={setUsers}
+          initialColumns={userColumns}
+        />
         <Divider />
         <Typography variant="h6" gutterBottom mt={2} mb={2}>
           {"Cars"}
