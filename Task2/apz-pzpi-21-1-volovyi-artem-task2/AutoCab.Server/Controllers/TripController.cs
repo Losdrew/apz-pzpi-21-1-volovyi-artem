@@ -44,6 +44,25 @@ public class TripController : BaseController
     }
 
     /// <summary>
+    /// Get trips of all users.
+    /// </summary>
+    /// <remarks>
+    /// If the operation is successful, it will return an ICollection of TripInfoDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpGet("trips")]
+    [Authorize(Roles = Roles.Administrator)]
+    [ProducesResponseType(typeof(TripInfoDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> GetTrips()
+    {
+        var query = new GetTripsQuery();
+        var result = await Mediator.Send(query);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
     /// Get user's trips.
     /// </summary>
     /// <remarks>
