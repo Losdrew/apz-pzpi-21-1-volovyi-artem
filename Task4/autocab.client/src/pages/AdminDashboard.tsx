@@ -8,13 +8,13 @@ import EditableDataGrid from '../components/EditableDataGrid';
 import authService from '../features/authService';
 import carService from '../features/carService';
 import dataService from '../features/dataService';
+import tripService from '../features/tripService';
 import userService from '../features/userService';
 import useAuth from '../hooks/useAuth';
 import useStatusConverter from '../hooks/useStatusConverter';
-import { CarStatus } from '../interfaces/enums';
-import { GridCar, GridTrip, GridUser } from '../interfaces/grid';
-import tripService from '../features/tripService';
 import { AddressDto } from '../interfaces/address';
+import { CarStatus } from '../interfaces/enums';
+import { GridCar, GridService, GridTrip, GridUser } from '../interfaces/grid';
 import { ServiceInfoDto } from '../interfaces/service';
 
 const AdminDashboard = () => {
@@ -23,6 +23,7 @@ const AdminDashboard = () => {
   const [cars, setCars] = useState<GridCar[]>();
   const [users, setUsers] = useState<GridUser[]>();
   const [trips, setTrips] = useState<GridTrip[]>();
+  const [services, setServices] = useState<GridService[]>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'success' | 'error' | null>(null);
  
@@ -66,13 +67,23 @@ const AdminDashboard = () => {
         const response = await tripService.getTrips(auth.bearer!);
         setTrips(response);
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching trips:', error);
+      }
+    };
+
+    const fetchServices = async () => {
+      try {
+        const response = await tripService.getServices();
+        setServices(response);
+      } catch (error) {
+        console.error('Error fetching services:', error);
       }
     };
 
     fetchCars();
     fetchUsers();
     fetchTrips();
+    fetchServices();
   }, [auth.bearer]) 
 
   const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -127,6 +138,23 @@ const AdminDashboard = () => {
               user.phoneNumber
             );
           }
+        }
+      }
+      for (const service of services) {
+        if (service.isNew) {
+          await tripService.createService(
+            service.name,
+            service.command,
+            auth.bearer
+          );
+        }
+        else {
+          await tripService.editService(
+            auth.bearer,
+            service.id,
+            service.name,
+            service.command
+          );
         }
       }
       setSaveStatus('success');
@@ -223,6 +251,11 @@ const AdminDashboard = () => {
         </ul>
       )
     },
+  ];
+
+  const serviceColumns: GridColDef[] = [
+    { field: 'name', headerName: "Name", width: 170, editable: true },
+    { field: 'command', headerName: "Command", width: 170, editable: true }
   ];
 
   const carColumns: GridColDef[] = [
@@ -329,6 +362,21 @@ const AdminDashboard = () => {
           rows={trips || []}
           setRows={setTrips}
           initialColumns={tripColumns}
+        />
+        <Divider />
+        <Typography variant="h6" gutterBottom mt={2} mb={2}>
+          {"Services"}
+        </Typography>
+        <EditableDataGrid
+          toolbar={EditToolbar}
+          toolbarProps={{
+            setModal: setIsModalOpen,
+            rows: services || [],
+            setRows: setServices
+          }}
+          rows={services || []}
+          setRows={setServices}
+          initialColumns={serviceColumns}
         />
         <Divider />
         <Typography variant="h6" gutterBottom mt={2} mb={2}>

@@ -2,6 +2,7 @@ import axios from "axios";
 import apiClient from "../config/apiClient";
 import { CreateTripCommand, TripInfoDto } from "../interfaces/trip";
 import { AddressDto } from "../interfaces/address";
+import { CreateServiceCommand, EditServiceCommand, ServiceInfoDto } from "../interfaces/service";
 
 const getTrips = async (
   bearerToken: string
@@ -77,10 +78,87 @@ const createTrip = async (
   }
 };
 
+const getServices = async (
+): Promise<ServiceInfoDto[]> => {
+  try {
+    const response = await apiClient.get<ServiceInfoDto[]>(
+      'api/Service/services'
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.message);
+    } else {
+      throw new Error("Unknown error occurred.");
+    }
+  }
+};
+
+const createService = async (
+  name: string,
+  command: string,
+  bearerToken: string
+): Promise<ServiceInfoDto> => {
+  try {
+    const request: CreateServiceCommand = {
+      name,
+      command
+    }
+    const headers = {
+      'Authorization': 'Bearer ' + bearerToken
+    };
+    const response = await apiClient.post<ServiceInfoDto>(
+      'api/Service/create',
+      request,
+      { headers }
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.message);
+    } else {
+      throw new Error("Unknown error occurred.");
+    }
+  }
+};
+
+const editService = async (
+  bearerToken: string,
+  id?: string,
+  name?: string,
+  command?: string,
+): Promise<ServiceInfoDto> => {
+  try {
+    const request: EditServiceCommand = {
+      id,
+      name,
+      command
+    }
+    const headers = {
+      'Authorization': 'Bearer ' + bearerToken
+    };
+    const response = await apiClient.post<ServiceInfoDto>(
+      'api/Service/edit',
+      request,
+      { headers }
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.message);
+    } else {
+      throw new Error("Unknown error occurred.");
+    }
+  }
+};
+
 const tripService = {
   getTrips,
   getUserTrips,
-  createTrip
+  createTrip,
+  getServices,
+  createService,
+  editService
 };
 
 export default tripService;
