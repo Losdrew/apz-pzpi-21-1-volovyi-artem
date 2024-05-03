@@ -14,6 +14,7 @@ const SignUp = () => {
   const [role, setRole] = useState(Roles.None);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,7 +22,7 @@ const SignUp = () => {
     try {
       let result: AuthResultDto = { userId: '', bearer: '', role: '' };
       if (role === Roles.Customer) {
-        result = await authService.signUpCustomer(email, password, firstName, lastName)
+        result = await authService.signUpCustomer(email, password, firstName, lastName, phoneNumber)
       }
 
       setAuth(result);
@@ -94,6 +95,13 @@ const SignUp = () => {
                 fullWidth
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
+              />
+              <TextField
+                label={"Phone number"}
+                variant="outlined"
+                fullWidth
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </Box>
             <Box display="flex" justifyContent="space-between" flexDirection="row" mb={3} px={3}>
