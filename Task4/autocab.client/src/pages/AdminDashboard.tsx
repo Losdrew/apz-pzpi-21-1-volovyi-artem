@@ -12,13 +12,17 @@ import userService from '../features/userService';
 import useAuth from '../hooks/useAuth';
 import useStatusConverter from '../hooks/useStatusConverter';
 import { CarStatus } from '../interfaces/enums';
-import { GridCar, GridUser } from '../interfaces/grid';
+import { GridCar, GridTrip, GridUser } from '../interfaces/grid';
+import tripService from '../features/tripService';
+import { AddressDto } from '../interfaces/address';
+import { ServiceInfoDto } from '../interfaces/service';
 
 const AdminDashboard = () => {
   const { auth } = useAuth();
-  const { CarStatusColors, CarStatusLabels } = useStatusConverter();
+  const { CarStatusColors, CarStatusLabels, TripStatusColors, TripStatusLabels } = useStatusConverter();
   const [cars, setCars] = useState<GridCar[]>();
   const [users, setUsers] = useState<GridUser[]>();
+  const [trips, setTrips] = useState<GridTrip[]>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'success' | 'error' | null>(null);
  
@@ -57,8 +61,18 @@ const AdminDashboard = () => {
       }
     };
 
+    const fetchTrips = async () => {
+      try {
+        const response = await tripService.getTrips(auth.bearer!);
+        setTrips(response);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
     fetchCars();
     fetchUsers();
+    fetchTrips();
   }, [auth.bearer]) 
 
   const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -123,11 +137,92 @@ const AdminDashboard = () => {
   };
 
   const userColumns: GridColDef[] = [
+    { field: 'id', headerName: "User Id", width: 170, editable: true },
     { field: 'email', headerName: "Email", width: 170, editable: true },
     { field: 'firstName', headerName: "First Name", width: 170, editable: true },
     { field: 'lastName', headerName: "Last Name", width: 170, editable: true },
     { field: 'phoneNumber', headerName: "Phone Number", width: 170, editable: true },
     { field: 'role', headerName: "Role", width: 100, editable: true }
+  ];
+
+  const tripColumns: GridColDef[] = [
+    { field: 'id', headerName: "id", width: 170, editable: false },
+    { field: 'userId', headerName: "User Id", width: 170, editable: false },
+    {
+      field: 'tripStatus',
+      headerName: "Status",
+        renderCell: (params: GridRenderCellParams<any, CarStatus>) => (
+          <span
+            style={{
+              padding: '5px',
+              borderRadius: '10px',
+              backgroundColor: TripStatusColors[params.value],
+            }}
+          >
+            {TripStatusLabels[params.value]}
+          </span>
+        ),
+    },
+    {
+      field: 'startDateTime',
+      headerName: "startDateTime",
+      width: 170,
+      valueFormatter: (params: GridValueFormatterParams<Date>) =>
+        new Date(Date.parse(params?.toString())),
+      editable: true
+    },
+    { field: 'price', headerName: "Price", width: 100, editable: true },
+    {
+      field: 'startAddress',
+      headerName: "Start Address",
+      width: 170,
+      valueFormatter: (params: GridValueFormatterParams<AddressDto>) => {
+        if (params != null) {
+          return `${params.addressLine1}, 
+          ${params.addressLine2}, 
+          ${params.addressLine3},
+          ${params.addressLine4},
+          ${params.townCity},
+          ${params.region}
+          ${params.country}`
+        };
+        return '';
+      }
+    },
+    {
+      field: 'destinationAddress',
+      headerName: "Detionation Address",
+      width: 170,
+      valueFormatter: (params: GridValueFormatterParams<AddressDto>) => {
+        if (params != null) {
+          return `${params.addressLine1}, 
+          ${params.addressLine2}, 
+          ${params.addressLine3},
+          ${params.addressLine4},
+          ${params.townCity},
+          ${params.region}
+          ${params.country}`
+        };
+        return '';
+      }
+    },
+    { field: 'carId', headerName: "Car Id", width: 170, editable: false },
+    {
+      field: 'services',
+      headerName: "Services",
+      width: 170,
+      renderCell: (params: GridRenderCellParams<any, ServiceInfoDto[]>) => (
+        <ul className="flex"
+          style={{
+            margin: 0,
+            padding: '0px 0px 0px 5px',
+        }}>
+          {params.value.map((service, id) => (
+            <li key={id}>{service.name}</li>
+          ))}
+        </ul>
+      )
+    },
   ];
 
   const carColumns: GridColDef[] = [
@@ -219,6 +314,21 @@ const AdminDashboard = () => {
           rows={users || []}
           setRows={setUsers}
           initialColumns={userColumns}
+        />
+        <Divider />
+        <Typography variant="h6" gutterBottom mt={2} mb={2}>
+          {"Trips"}
+        </Typography>
+        <EditableDataGrid
+          toolbar={EditToolbar}
+          toolbarProps={{
+            setModal: setIsModalOpen,
+            rows: trips || [],
+            setRows: setTrips
+          }}
+          rows={trips || []}
+          setRows={setTrips}
+          initialColumns={tripColumns}
         />
         <Divider />
         <Typography variant="h6" gutterBottom mt={2} mb={2}>
