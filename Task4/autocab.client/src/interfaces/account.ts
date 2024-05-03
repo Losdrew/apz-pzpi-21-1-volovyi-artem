@@ -20,3 +20,11 @@ export interface CreateUserCommand {
 export interface CreateCustomerCommand extends CreateUserCommand { }
 export interface CreateAdminCommand extends CreateUserCommand { }
 
+export interface UserInfoDto {
+  id?: string | undefined;
+  email?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  phoneNumber?: string | undefined;
+  role?: string | undefined;
+}
