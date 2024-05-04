@@ -131,6 +131,19 @@ const AdminDashboard = () => {
     fetchServices();
   }, [auth.bearer]) 
 
+  useEffect(() => {
+    const fetchCertificate = async () => {
+      try {
+        const response = await certificateService.getCertificateInfo(auth.bearer!);
+        setCertificate(response);
+      } catch (error) {
+        console.error('Error fetching certificate:', error);
+      }
+    };
+
+    fetchCertificate();
+  }, [auth.bearer, certificate]) 
+
   const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
@@ -382,6 +395,46 @@ const AdminDashboard = () => {
               />
             </Button>
           </Box>
+        </Box>
+        <Divider />
+        <Typography variant="h6" gutterBottom mt={2}>
+          {"Certificate management"}
+        </Typography>
+        <Table sx={{ mb: 2 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>{"Subject"}</TableCell>
+              <TableCell>{"Issuer"}</TableCell>
+              <TableCell>{"Issued Date"}</TableCell>
+              <TableCell>{"Expiry Date"}</TableCell>
+              <TableCell>{"Thumbprint"}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>{certificate?.subject}</TableCell>
+              <TableCell>{certificate?.issuer}</TableCell>
+              <TableCell>{certificate?.issuedDate?.toLocaleString()}</TableCell>
+              <TableCell>{certificate?.expiryDate?.toLocaleString()}</TableCell>
+              <TableCell>{certificate?.thumbprint}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+        <Box mb={2} display="flex" flexDirection="row" gap="20px">
+          <Button variant="contained" color="primary" onClick={handleExportCertificate}>
+            {"Export certificate"}
+          </Button>
+          <Button
+            variant="contained"
+            component="label"
+          >
+            {"Import certificate"}
+            <input
+              type="file"
+              hidden
+              onChange={(event) => handleImportCertificate(event.target.files[0])}
+            />
+          </Button>
         </Box>
         <Divider />
         <Typography variant="h6" gutterBottom mt={2} mb={2}>
