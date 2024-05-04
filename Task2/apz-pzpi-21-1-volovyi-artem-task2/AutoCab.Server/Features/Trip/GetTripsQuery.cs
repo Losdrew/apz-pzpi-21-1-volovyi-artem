@@ -7,6 +7,8 @@ using AutoCab.Shared.Errors.ServiceErrors;
 using AutoCab.Shared.ServiceResponseHandling;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using AutoCab.Shared.Dto.Car;
+using System.Collections.ObjectModel;
 
 namespace AutoCab.Server.Features.Trip;
 
@@ -46,7 +48,7 @@ public class GetTripsQuery : IRequest<ServiceResponse<ICollection<TripInfoDto>>>
                 return ServiceResponseBuilder.Failure<ICollection<TripInfoDto>>(UserError.InvalidAuthorization);
             }
 
-            var trips = new List<Db.Models.Trip>();
+            var trips = new List<TripInfoDto>();
             var users = Context.Users.ToList();
 
             foreach (var user in users)
@@ -58,11 +60,15 @@ public class GetTripsQuery : IRequest<ServiceResponse<ICollection<TripInfoDto>>>
                     .Where(t => t.UserId == user.Id)
                     .ToList();
 
-                trips.AddRange(trip);
+                if (trip.Any())
+                {
+                    var tripInfo = Mapper.Map<List<TripInfoDto>>(trip);
+                    trips.AddRange(tripInfo);
+                }
             }
 
-            var result = Mapper.Map<ICollection<TripInfoDto>>(trips);
-            return ServiceResponseBuilder.Success(result);
+            var result = new Collection<TripInfoDto>(trips);
+            return ServiceResponseBuilder.Success((ICollection<TripInfoDto>)result);
         }
     }
 }

@@ -37,6 +37,10 @@ public class GetCarsQuery : IRequest<ServiceResponse<ICollection<CarInfoDto>>>
             GetCarsQuery request, CancellationToken cancellationToken)
         {
             var cars = Context.Cars;
+            if (!cars.Any())
+            {
+                return ServiceResponseBuilder.Failure<ICollection<CarInfoDto>>(CarError.GetCarsError);
+            }
             var result = Mapper.Map<ICollection<CarInfoDto>>(cars);
             return ServiceResponseBuilder.Success(result);
         }
