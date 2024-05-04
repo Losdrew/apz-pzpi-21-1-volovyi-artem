@@ -1,21 +1,39 @@
 import axios from "axios";
 import apiClient from "../config/apiClient";
-import { CreateTripCommand, TripInfoDto } from "../interfaces/trip";
 import { AddressDto } from "../interfaces/address";
 import { CreateServiceCommand, EditServiceCommand, ServiceInfoDto } from "../interfaces/service";
+import { CancelOwnTripCommand, CreateTripCommand, TripFullInfo, TripInfoDto } from "../interfaces/trip";
+import { CarInfoDto } from "../interfaces/car";
 
 const getTrips = async (
   bearerToken: string
-): Promise<TripInfoDto[]> => {
+): Promise<TripFullInfo[]> => {
   try {
     const headers = {
       'Authorization': 'Bearer ' + bearerToken
     };
-    const response = await apiClient.get<TripInfoDto[]>(
+    const tripResponse = await apiClient.get<TripInfoDto[]>(
       'api/Trip/trips',
       { headers }
     );
-    return response.data;
+    const tripsFullInfo = [];
+
+    for (const trip of tripResponse.data) {
+      const carResponse = await apiClient.get<CarInfoDto>(
+        '/api/Car/car?carId=' + trip.carId,
+        { headers }
+      );
+
+      const tripFullInfo: TripFullInfo = {
+        ...trip,
+        car: carResponse.data,
+        startDateTime: new Date(Date.parse(trip.startDateTime?.toString())),
+      };
+
+      tripsFullInfo.push(tripFullInfo);
+    }
+
+    return tripsFullInfo;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data.message);
@@ -27,16 +45,33 @@ const getTrips = async (
 
 const getUserTrips = async (
   bearerToken: string
-): Promise<TripInfoDto[]> => {
+): Promise<TripFullInfo[]> => {
   try {
     const headers = {
       'Authorization': 'Bearer ' + bearerToken
     };
-    const response = await apiClient.get<TripInfoDto[]>(
+    const tripResponse = await apiClient.get<TripInfoDto[]>(
       'api/Trip/user-trips',
       { headers }
     );
-    return response.data;
+    const tripsFullInfo = [];
+
+    for (const trip of tripResponse.data) {
+      const carResponse = await apiClient.get<CarInfoDto>(
+        '/api/Car/car?carId=' + trip.carId,
+        { headers }
+      );
+
+      const tripFullInfo: TripFullInfo = {
+        ...trip,
+        car: carResponse.data,
+        startDateTime: new Date(Date.parse(trip.startDateTime?.toString())),
+      };
+
+      tripsFullInfo.push(tripFullInfo);
+    }
+
+    return tripsFullInfo;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data.message);
@@ -158,7 +193,7 @@ const tripService = {
   createTrip,
   getServices,
   createService,
-  editService
+  editService,
 };
 
 export default tripService;

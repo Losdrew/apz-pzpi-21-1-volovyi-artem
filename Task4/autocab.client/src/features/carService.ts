@@ -18,6 +18,23 @@ const getCars = async (
   }
 };
 
+const getCar = async (
+  carId: string
+): Promise<CarInfoDto> => {
+  try {
+    const response = await apiClient.get<CarInfoDto>(
+      'api/Car/car?carId=' + carId
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.message);
+    } else {
+      throw new Error("Unknown error occurred.");
+    }
+  }
+};
+
 const createCar = async (
   brand: string,
   model: string,
@@ -90,6 +107,7 @@ const editCar = async (
 
 const carService = {
   getCars,
+  getCar,
   createCar,
   editCar
 };

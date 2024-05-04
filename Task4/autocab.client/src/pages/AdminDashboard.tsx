@@ -285,7 +285,33 @@ const AdminDashboard = () => {
         return '';
       }
     },
-    { field: 'carId', headerName: "Car Id", width: 170, editable: false },
+    {
+      field: 'carBrand',
+      headerName: "Car Brand",
+      width: 170,
+      renderCell: (params) => {
+        return params?.row?.car.brand;
+      },
+      editable: false
+    },
+    {
+      field: 'carModel',
+      headerName: "Car Model",
+      width: 170,
+      renderCell: (params) => {
+        return params?.row?.car.model;
+      },
+      editable: false
+    },
+    {
+      field: 'carLicencePlate',
+      headerName: "Car Licence Plate",
+      width: 100,
+      renderCell: (params) => {
+        return params?.row?.car.licencePlate;
+      },
+      editable: false
+    },
     {
       field: 'services',
       headerName: "Services",
