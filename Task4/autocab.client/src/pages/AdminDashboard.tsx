@@ -29,7 +29,7 @@ const AdminDashboard = () => {
  
   const handleExportData = async () => {
     try {
-      const response = await dataService.getExportedData(auth.bearer!);
+      const response = await dataService.exportData(auth.bearer!);
       
       const link = document.createElement('a');
       const blob = new Blob([response]);
@@ -174,7 +174,6 @@ const AdminDashboard = () => {
   ];
 
   const tripColumns: GridColDef[] = [
-    { field: 'id', headerName: "id", width: 170, editable: false },
     { field: 'userId', headerName: "User Id", width: 170, editable: false },
     {
       field: 'tripStatus',
@@ -193,10 +192,15 @@ const AdminDashboard = () => {
     },
     {
       field: 'startDateTime',
-      headerName: "startDateTime",
+      headerName: "Start Date",
       width: 170,
-      valueFormatter: (params: GridValueFormatterParams<Date>) =>
-        new Date(Date.parse(params?.toString())),
+      valueFormatter: (params: GridValueFormatterParams<Date>) => {
+        if (params != null) {
+          const date = new Date(Date.parse(params?.toString()));
+          return date.toLocaleString();
+        }
+        return '';
+      },
       editable: true
     },
     { field: 'price', headerName: "Price", width: 100, editable: true },
@@ -219,7 +223,7 @@ const AdminDashboard = () => {
     },
     {
       field: 'destinationAddress',
-      headerName: "Detionation Address",
+      headerName: "Destination Address",
       width: 170,
       valueFormatter: (params: GridValueFormatterParams<AddressDto>) => {
         if (params != null) {
@@ -245,7 +249,7 @@ const AdminDashboard = () => {
             margin: 0,
             padding: '0px 0px 0px 5px',
         }}>
-          {params.value.map((service, id) => (
+          {params?.value?.map((service, id) => (
             <li key={id}>{service.name}</li>
           ))}
         </ul>
