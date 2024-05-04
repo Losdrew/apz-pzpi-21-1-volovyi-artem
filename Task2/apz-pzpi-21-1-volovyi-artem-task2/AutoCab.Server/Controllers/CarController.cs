@@ -38,6 +38,27 @@ public class CarController : BaseController
     }
 
     /// <summary>
+    /// Get car by id.
+    /// </summary>
+    /// <remarks>
+    /// If the operation is successful, it will return CarInfoDto.
+    /// If there is a bad request, it will return an ErrorDto.
+    /// </remarks>
+    /// <returns>An IActionResult representing the result of the operation.</returns>
+    [HttpGet("car")]
+    [ProducesResponseType(typeof(CarInfoDto), 200)]
+    [ProducesResponseType(typeof(ErrorDto), 400)]
+    public async Task<IActionResult> GetCar(Guid carId)
+    {
+        var query = new GetCarQuery()
+        {
+            CarId = carId
+        };
+        var result = await Mediator.Send(query);
+        return ConvertFromServiceResponse(result);
+    }
+
+    /// <summary>
     /// Get a list of cars available for trip.
     /// </summary>
     /// <remarks>
