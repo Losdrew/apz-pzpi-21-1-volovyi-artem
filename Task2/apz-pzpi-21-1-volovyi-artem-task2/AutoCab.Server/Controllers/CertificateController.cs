@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace AutoCab.Server.Controllers;
 
@@ -66,10 +67,9 @@ public class CertificateController : BaseController
         {
             X509Certificate2 certificate = new X509Certificate2(certFilePath);
 
-            byte[] privateKeyBytes = System.IO.File.ReadAllBytes(keyFilePath);
+            var privateKeyText = System.IO.File.ReadAllText(keyFilePath);
             RSA privateKey = RSA.Create();
-            int bytesRead = 0;
-            privateKey.ImportRSAPrivateKey(privateKeyBytes, out bytesRead);
+            privateKey.ImportFromPem(privateKeyText.ToCharArray());
 
             X509Certificate2 certificateWithPrivateKey = certificate.CopyWithPrivateKey(privateKey);
 
@@ -109,12 +109,12 @@ public class CertificateController : BaseController
         }
 
         // Export the private key to .key file
-        var privateKeyBytes = privateKey.ExportRSAPrivateKey();
-        System.IO.File.WriteAllBytes(keyFilePath, privateKeyBytes);
+        var privateKeyPem = privateKey.ExportPkcs8PrivateKeyPem();
+        System.IO.File.WriteAllText(keyFilePath, privateKeyPem);
 
         // Export the certificate to .pem file
-        var pemString = cert.Export(X509ContentType.Cert);
-        System.IO.File.WriteAllBytes(pemFilePath, pemString);
+        var pemString = cert.ExportCertificatePem();
+        System.IO.File.WriteAllText(pemFilePath, pemString);
 
         return Ok("Certificate uploaded successfully.");
     }
