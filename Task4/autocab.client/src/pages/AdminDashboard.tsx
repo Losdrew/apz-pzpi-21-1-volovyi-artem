@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Container, Divider, Paper, Snackbar, Typography } from '@mui/material';
+import { Alert, Box, Button, Container, Divider, Paper, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { GridColDef, GridRenderCellParams, GridValueFormatterParams } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import CarEditToolbar from '../components/CarEditToolbar';
@@ -7,12 +7,14 @@ import EditToolbar from '../components/EditToolbar';
 import EditableDataGrid from '../components/EditableDataGrid';
 import authService from '../features/authService';
 import carService from '../features/carService';
+import certificateService from '../features/certificateService';
 import dataService from '../features/dataService';
 import tripService from '../features/tripService';
 import userService from '../features/userService';
 import useAuth from '../hooks/useAuth';
 import useStatusConverter from '../hooks/useStatusConverter';
 import { AddressDto } from '../interfaces/address';
+import { CertificateInfoDto } from '../interfaces/certificate';
 import { CarStatus } from '../interfaces/enums';
 import { GridCar, GridService, GridTrip, GridUser } from '../interfaces/grid';
 import { ServiceInfoDto } from '../interfaces/service';
@@ -24,6 +26,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState<GridUser[]>();
   const [trips, setTrips] = useState<GridTrip[]>();
   const [services, setServices] = useState<GridService[]>();
+  const [certificate, setCertificate] = useState<CertificateInfoDto>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'success' | 'error' | null>(null);
  
@@ -42,6 +45,48 @@ const AdminDashboard = () => {
       console.error('Error exporting data', error);
     }
   };
+
+  const handleImportDatabase = async (file: File) => {
+    if (file == null) {
+      return;
+    }
+    try {
+      const response = await dataService.importData(file, auth.bearer!);
+      setSaveStatus('success');
+    } catch (error) {
+      console.error('Error importing database:', error);
+      setSaveStatus('error');
+    }
+  }
+
+  const handleExportCertificate = async () => {
+    try {
+      const response = await certificateService.exportCertificate(auth.bearer!);
+
+      const link = document.createElement('a');
+      const blob = new Blob([response]);
+
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'certificate.pfx';
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Error exporting data', error);
+    }
+  };
+
+  const handleImportCertificate = async (file: File) => {
+    if (file == null) {
+      return;
+    }
+    try {
+      const response = await certificateService.importCertificate(file, auth.bearer!);
+      setSaveStatus('success');
+    } catch (error) {
+      console.error('Error importing database:', error);
+      setSaveStatus('error');
+    }
+  }
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -333,6 +378,7 @@ const AdminDashboard = () => {
               <input
                 type="file"
                 hidden
+                onChange={(event) => handleImportDatabase(event.target.files[0])}
               />
             </Button>
           </Box>
