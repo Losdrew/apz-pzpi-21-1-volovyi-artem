@@ -5,6 +5,7 @@ import CarEditToolbar from '../components/CarEditToolbar';
 import CarLocationModal from '../components/CarLocationModal';
 import EditToolbar from '../components/EditToolbar';
 import EditableDataGrid from '../components/EditableDataGrid';
+import addressService from '../features/addressService';
 import authService from '../features/authService';
 import carService from '../features/carService';
 import certificateService from '../features/certificateService';
@@ -268,13 +269,7 @@ const AdminDashboard = () => {
       width: 170,
       valueFormatter: (params: GridValueFormatterParams<AddressDto>) => {
         if (params != null) {
-          return `${params.addressLine1}, 
-          ${params.addressLine2}, 
-          ${params.addressLine3},
-          ${params.addressLine4},
-          ${params.townCity},
-          ${params.region}
-          ${params.country}`
+          return addressService.getFullAddress(params);
         };
         return '';
       }
@@ -285,13 +280,7 @@ const AdminDashboard = () => {
       width: 170,
       valueFormatter: (params: GridValueFormatterParams<AddressDto>) => {
         if (params != null) {
-          return `${params.addressLine1}, 
-          ${params.addressLine2}, 
-          ${params.addressLine3},
-          ${params.addressLine4},
-          ${params.townCity},
-          ${params.region}
-          ${params.country}`
+          return addressService.getFullAddress(params);
         };
         return '';
       }
