@@ -187,6 +187,30 @@ const editService = async (
   }
 };
 
+const cancelOwnTrip = async (
+  tripId: string,
+  bearerToken: string,
+): Promise<boolean> => {
+  try {
+    const request: CancelOwnTripCommand = { tripId };
+    const headers = {
+      'Authorization': 'Bearer ' + bearerToken
+    };
+    await apiClient.post(
+      '/api/Trip/cancel',
+      request,
+      { headers }
+    );
+    return true;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.message);
+    } else {
+      throw new Error("Unknown error occurred.");
+    }
+  }
+};
+
 const tripService = {
   getTrips,
   getUserTrips,
@@ -194,6 +218,7 @@ const tripService = {
   getServices,
   createService,
   editService,
+  cancelOwnTrip
 };
 
 export default tripService;

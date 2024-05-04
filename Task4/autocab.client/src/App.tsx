@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import RequireAuth from './components/RequireAuth';
 import { Roles } from './interfaces/enums';
 import AdminDashboard from './pages/AdminDashboard';
+import CustomerTrips from './pages/CustomerTrips';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -17,6 +18,10 @@ function App() {
 
         <Route element={<RequireAuth allowedRoles={[Roles.Administrator]} />}>
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[Roles.Customer]} />}>
+          <Route path="/customer-trips" element={<CustomerTrips />} />
         </Route>
       </Route>
     </Routes>
