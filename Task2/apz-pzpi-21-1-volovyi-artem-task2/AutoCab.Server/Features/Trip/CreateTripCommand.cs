@@ -49,6 +49,9 @@ public class CreateTripCommand : CreateTripCommandDto, IRequest<ServiceResponse<
             newTrip.User = customer;
             newTrip.StartDateTime = DateTime.UtcNow;
             newTrip.Status = Db.Models.TripStatus.Created;
+            
+            ValidateAddresses(ref newTrip);
+
             Context.Add(newTrip);
 
             await Context.SaveChangesAsync(cancellationToken);
@@ -57,6 +60,23 @@ public class CreateTripCommand : CreateTripCommandDto, IRequest<ServiceResponse<
             result.UserId = customer.Id;
 
             return ServiceResponseBuilder.Success(result);
+        }
+
+        private void ValidateAddresses(ref Db.Models.Trip trip)
+        {
+            var existingStartAddress = Context.Addresses.Find(trip.StartAddress.Id);
+
+            if (existingStartAddress != null)
+            {
+                trip.StartAddress = null;
+            }
+
+            var existingDestinationAddress = Context.Addresses.Find(trip.DestinationAddress.Id);
+
+            if (existingDestinationAddress != null)
+            {
+                trip.DestinationAddress = null;
+            }
         }
     }
 }
