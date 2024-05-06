@@ -1,3 +1,4 @@
+import { AddressDto } from "./address";
 import { CarStatus } from "./enums";
 import { LocationDto } from "./geolocation";
 
@@ -45,6 +46,7 @@ export interface SetCarStatusCommand {
   newStatus?: CarStatus;
 }
 
-export interface ToggleCarDoorCommand {
-  carId?: string;
+export interface GetCarsForTripQuery {
+  startAddress: AddressDto;
+  destinationAddress: AddressDto;
 }

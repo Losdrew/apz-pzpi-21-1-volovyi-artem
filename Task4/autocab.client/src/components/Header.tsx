@@ -61,6 +61,15 @@ export function Header() {
               {"My Trips"}
             </Button>
           )}
+          {auth.role === Roles.Customer && (
+            <Button
+              component={LinkRouter}
+              to="/create-trip"
+              sx={{ my: 2, color: 'white' }}
+            >
+              {"Create trip"}
+            </Button>
+          )}
         </Box>
         {!auth.userId && (
           <Button

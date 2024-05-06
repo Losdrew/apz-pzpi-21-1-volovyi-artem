@@ -1,12 +1,41 @@
 import axios from "axios";
 import apiClient from "../config/apiClient";
-import { CarInfoDto, CreateCarCommand, EditCarCommand } from "../interfaces/car";
+import { AddressDto } from "../interfaces/address";
+import { CarForTripDto, CarInfoDto, CreateCarCommand, EditCarCommand, GetCarsForTripQuery } from "../interfaces/car";
 
 const getCars = async (
 ): Promise<CarInfoDto[]> => {
   try {
     const response = await apiClient.get<CarInfoDto[]>(
       'api/Car/cars'
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.message);
+    } else {
+      throw new Error("Unknown error occurred.");
+    }
+  }
+};
+
+const getCarsForTrip = async (
+  startAddress: AddressDto,
+  destinationAddress: AddressDto,
+  bearerToken: string
+): Promise<CarForTripDto[]> => {
+  try {
+    const request: GetCarsForTripQuery = {
+      startAddress,
+      destinationAddress
+    }
+    const headers = {
+      'Authorization': 'Bearer ' + bearerToken
+    };
+    const response = await apiClient.post<CarForTripDto[]>(
+      'api/Car/cars-for-trip',
+      request,
+      { headers }
     );
     return response.data;
   } catch (error) {
@@ -107,6 +136,7 @@ const editCar = async (
 
 const carService = {
   getCars,
+  getCarsForTrip,
   getCar,
   createCar,
   editCar
