@@ -11,9 +11,8 @@ namespace AutoCab.Server.Features.Trip;
 
 public class UpdateTripServicesCommand : UpdateTripServicesCommandDto, IRequest<ServiceResponse<TripInfoDto>>
 {
-    public Guid TripId { get; set; }
-
-    public class UpdateTripServicesCommandHandler : ExtendedBaseHandler<UpdateTripServicesCommand, ServiceResponse<TripInfoDto>>
+    public class UpdateTripServicesCommandHandler 
+        : ExtendedBaseHandler<UpdateTripServicesCommand, ServiceResponse<TripInfoDto>>
     {
         public UpdateTripServicesCommandHandler(ApplicationDbContext context, IHttpContextAccessor contextAccessor,
             IMapper mapper, ILogger<UpdateTripServicesCommandHandler> logger)
