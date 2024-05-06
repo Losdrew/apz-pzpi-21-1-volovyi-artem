@@ -1,33 +1,21 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import MapboxMap from './MapboxMap';
 import { useEffect, useState } from 'react';
-import geolocationService from '../features/geolocationService';
+import { LocationDto } from '../interfaces/geolocation';
+import MapboxMap from './MapboxMap';
 
-const CarLocationModal = ({ open, handleClose }) => {
-  const [route, setRoute] = useState();
+const CarLocationModal = ({ open, handleClose, selectedCar }) => {
+  const [currentLocation, setCurrentLocation] = useState<LocationDto>();
 
   useEffect(() => {
-    const fetchRoute = async () => {
-      try {
-        const response = await geolocationService.getRoute(
-          [35.871651,48.531681],
-          [35.868051,48.529541]
-        );
-        setRoute(response.routes[0].geometry.coordinates);
-      } catch (error) {
-        console.error('Error fetching robots:', error);
-      }
-    };
-
-    fetchRoute();
-  }, []) 
+    setCurrentLocation(selectedCar?.location);
+  }, [open, selectedCar]) 
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{"Robot Location"}</DialogTitle>
+      <DialogTitle>{"Car Location"}</DialogTitle>
       <DialogContent>
-        <MapboxMap routeCoordinates={route} />
+        <MapboxMap currentLocation={[currentLocation?.x, currentLocation?.y]} />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">

@@ -24,6 +24,7 @@ interface EditableDataGridProps {
   rows: GridRowsProp;
   setRows: React.Dispatch<React.SetStateAction<GridRowsProp>>;
   initialColumns: GridColDef[];
+  handleSelectionChange: any;
 }
 
 const EditableDataGrid: React.FC<EditableDataGridProps> = ({
@@ -31,7 +32,8 @@ const EditableDataGrid: React.FC<EditableDataGridProps> = ({
   toolbarProps,
   rows,
   setRows,
-  initialColumns
+  initialColumns,
+  handleSelectionChange
 }) => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
@@ -140,7 +142,7 @@ const EditableDataGrid: React.FC<EditableDataGridProps> = ({
       <DataGrid
         rows={rows}
         hideFooter
-        sx={{color: "white"}}
+        sx={{ color: "white" }}
         columns={columns}
         editMode="row"
         rowModesModel={rowModesModel}
@@ -154,6 +156,7 @@ const EditableDataGrid: React.FC<EditableDataGridProps> = ({
         slotProps={{
           toolbar: toolbarProps,
         }}
+        onRowSelectionModelChange={handleSelectionChange}
       />
     </Box>
   );

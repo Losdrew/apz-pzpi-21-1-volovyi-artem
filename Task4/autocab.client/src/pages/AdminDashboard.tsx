@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Container, Divider, Paper, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { GridColDef, GridRenderCellParams, GridValueFormatterParams } from '@mui/x-data-grid';
+import { GridColDef, GridRenderCellParams, GridRowSelectionModel, GridValueFormatterParams } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import CarEditToolbar from '../components/CarEditToolbar';
 import CarLocationModal from '../components/CarLocationModal';
@@ -30,6 +30,7 @@ const AdminDashboard = () => {
   const [certificate, setCertificate] = useState<CertificateInfoDto>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'success' | 'error' | null>(null);
+  const [selectedCar, setSelectedCar] = useState<GridCar>();
  
   const handleExportData = async () => {
     try {
@@ -87,6 +88,11 @@ const AdminDashboard = () => {
       console.error('Error importing database:', error);
       setSaveStatus('error');
     }
+  }
+
+  const handleSelectionChange = (rowSelectionModel: GridRowSelectionModel) => {
+    const selectedCarId = rowSelectionModel.at(0);
+    setSelectedCar(cars?.find((car) => car.id === selectedCarId))
   }
 
   useEffect(() => {
@@ -503,13 +509,14 @@ const AdminDashboard = () => {
         <EditableDataGrid
           toolbar={CarEditToolbar}
           toolbarProps={{
-            setModal: setIsModalOpen, 
+            setModal: setIsModalOpen,
             rows: cars || [],
             setRows: setCars
           }}
           rows={cars || []}
           setRows={setCars}
           initialColumns={carColumns}
+          handleSelectionChange={ handleSelectionChange }
         />
         <Divider />
         <Box sx={{mt: 4}} display="flex" justifyContent="center">
@@ -534,7 +541,7 @@ const AdminDashboard = () => {
           </Snackbar>
         </Box>
       </Paper>
-      <CarLocationModal open={isModalOpen} handleClose={handleCloseModal} />
+      <CarLocationModal open={isModalOpen} handleClose={handleCloseModal} selectedCar={selectedCar} />
     </Container>
   );
 };

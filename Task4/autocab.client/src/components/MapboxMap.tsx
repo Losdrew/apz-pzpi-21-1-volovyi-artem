@@ -1,17 +1,22 @@
-import * as React from "react";
 import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css"; 
+import "mapbox-gl/dist/mapbox-gl.css";
+import React, { useEffect, useState } from "react";
+
 
 interface MapboxMapProps {
   routeCoordinates: number[][];
+  currentLocation: number[];
 }
 
-const MapboxMap: React.FC<MapboxMapProps> = ({ routeCoordinates }) => {
+const MapboxMap: React.FC<MapboxMapProps> = ({ currentLocation }) => {
   const [map, setMap] = React.useState<mapboxgl.Map>();
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
+  const [zoom, setZoom] = useState(12);
 
   const mapNode = React.useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const node = mapNode.current;
     if (typeof window === "undefined" || node === null) return;
 
@@ -19,38 +24,20 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ routeCoordinates }) => {
       container: node,
       accessToken: "pk.eyJ1IjoibG9zZHJldyIsImEiOiJjbHB1eGJkaHgwMHljMmtxeng2NzA4dndxIn0.S4r1YfGRASP85mHPYNjZuQ",
             style: "mapbox://styles/mapbox/streets-v11",
-      center: [35.871651, 48.531681],
-      zoom: 12,
+      center: currentLocation,
+      zoom: 12
     });
 
     setMap(mapboxMap);
     
     mapboxMap.on('load', () => {
-      mapboxMap.addSource('route', {
-        type: 'geojson',
-        data: {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'LineString',
-            coordinates: routeCoordinates
-          },
-        },
+      mapboxMap.on('move', () => {
+        setLng(mapboxMap.getCenter().lng.toFixed(4));
+        setLat(mapboxMap.getCenter().lat.toFixed(4));
+        setZoom(mapboxMap.getZoom().toFixed(2));
       });
 
-      mapboxMap.addLayer({
-        id: 'route',
-        type: 'line',
-        source: 'route',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-        },
-        paint: {
-          'line-color': '#536ee6',
-          'line-width': 8,
-        },
-      });
+      new mapboxgl.Marker().setLngLat(currentLocation).addTo(mapboxMap);
     });
 
     return () => {
@@ -59,7 +46,12 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ routeCoordinates }) => {
   }, []);
 
   return ( 
-    <div ref={mapNode} style={{ width: "500px", height: "500px" }}/>
+    <div>
+      <div className="sidebar">
+        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+      </div>
+      <div ref={mapNode} style={{ width: "500px", height: "500px" }} />
+    </div>
   );
 };
 
