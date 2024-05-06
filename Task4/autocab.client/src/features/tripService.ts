@@ -2,7 +2,7 @@ import axios from "axios";
 import apiClient from "../config/apiClient";
 import { AddressDto } from "../interfaces/address";
 import { CreateServiceCommand, EditServiceCommand, ServiceInfoDto } from "../interfaces/service";
-import { CancelOwnTripCommand, CreateTripCommand, TripFullInfo, TripInfoDto } from "../interfaces/trip";
+import { CancelOwnTripCommand, CreateTripCommand, TripFullInfo, TripInfoDto, UpdateTripServicesCommand } from "../interfaces/trip";
 import { CarInfoDto } from "../interfaces/car";
 
 const getTrips = async (
@@ -187,6 +187,34 @@ const editService = async (
   }
 };
 
+const updateTripServices = async (
+  tripId: string,
+  services: string[],
+  bearerToken: string
+): Promise<ServiceInfoDto> => {
+  try {
+    const request: UpdateTripServicesCommand = {
+      tripId,
+      services
+    }
+    const headers = {
+      'Authorization': 'Bearer ' + bearerToken
+    };
+    const response = await apiClient.post<ServiceInfoDto>(
+      'api/Trip/update-services',
+      request,
+      { headers }
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.message);
+    } else {
+      throw new Error("Unknown error occurred.");
+    }
+  }
+};
+
 const cancelOwnTrip = async (
   tripId: string,
   bearerToken: string,
@@ -218,6 +246,7 @@ const tripService = {
   getServices,
   createService,
   editService,
+  updateTripServices,
   cancelOwnTrip
 };
 

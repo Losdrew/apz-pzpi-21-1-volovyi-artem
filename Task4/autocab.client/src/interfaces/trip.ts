@@ -37,3 +37,8 @@ export interface TripFullInfo {
 export interface CancelOwnTripCommand {
   tripId: string;
 }
+
+export interface UpdateTripServicesCommand {
+  tripId: string;
+  services: string[];
+}

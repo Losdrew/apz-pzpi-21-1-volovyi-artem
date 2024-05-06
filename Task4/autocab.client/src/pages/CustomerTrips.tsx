@@ -13,6 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import SelectServicesModal from '../components/SelectServicesModal';
 import addressService from '../features/addressService';
 import tripService from '../features/tripService';
 import useAuth from '../hooks/useAuth';
@@ -30,9 +31,20 @@ const CustomerTrips = () => {
   } = useStatusConverter();
   const [trips, setTrips] = useState<TripFullInfo[]>([]);
   const [expandedTripId, setExpandedTripId] = useState<string | null>(null);
+  const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleExpand = (tripId: string) => {
     setExpandedTripId((prev) => (prev === tripId ? null : tripId));
+  };
+
+  const handleOpenModal = (tripId: string) => {
+    setSelectedTripId(tripId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -105,7 +117,7 @@ const CustomerTrips = () => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={5}>
+                  <TableCell colSpan={6}>
                     <Collapse in={expandedTripId === trip.id} timeout="auto" unmountOnExit>
                       <Box>
                         <Typography variant="h6" gutterBottom> {"Trip Info"} </Typography>
@@ -136,8 +148,16 @@ const CustomerTrips = () => {
                           {"Services"}: {trip.services?.map(service => service.name)}
                         </Typography>
                       </Box>
-                      <Box display="flex" flexDirection="column" alignItems="flex-end">
-                        {trip.tripStatus === TripStatus.Created && (
+                      <Box display="flex" flexDirection="row" justifyContent="flex-end" gap="15px">
+                        {trip.tripStatus === TripStatus.InProgress && (
+                          <Button
+                            variant="contained"
+                            onClick={() => handleOpenModal(trip.id)}
+                          >
+                            {"Update services"}
+                          </Button>
+                        )}
+                        {(trip.tripStatus === TripStatus.Created || trip.tripStatus === TripStatus.InProgress) && (
                           <Button
                           variant="outlined"
                           color="error"
@@ -155,6 +175,7 @@ const CustomerTrips = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <SelectServicesModal open={isModalOpen} onClose={handleCloseModal} tripId={selectedTripId} />
     </Container>
   );
 };
