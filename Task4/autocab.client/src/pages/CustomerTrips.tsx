@@ -47,24 +47,25 @@ const CustomerTrips = () => {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    const fetchTrips = async () => {
-      try {
-        if (auth.bearer) {
-          const response = await tripService.getUserTrips(auth.bearer);
-          setTrips(response);
-        }
-      } catch (error) {
-        console.error('Error fetching trips:', error);
+  const fetchTrips = async () => {
+    try {
+      if (auth.bearer) {
+        const response = await tripService.getUserTrips(auth.bearer);
+        setTrips(response);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching trips:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchTrips();
-  }, [auth.bearer, trips]);
+  }, [auth.bearer]);
 
   const handleCancelTrip = async (tripId: string) => {
     try {
       await tripService.cancelOwnTrip(tripId, auth.bearer!);
+      fetchTrips();
     } catch (error) {
       console.error('Error');
     }
@@ -105,7 +106,7 @@ const CustomerTrips = () => {
                       {TripStatusLabels[trip.tripStatus!]}
                     </span>
                   </TableCell>
-                  <TableCell>{trip.price}</TableCell>
+                  <TableCell>{trip.price.toPrecision(3)}$</TableCell>
                   <TableCell>
                     <Button
                       variant="outlined"
