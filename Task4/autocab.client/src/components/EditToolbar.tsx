@@ -2,6 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
 import { GridRowModes, GridRowModesModel, GridRowsProp, GridToolbarContainer } from "@mui/x-data-grid";
 import { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 export interface EditToolbarProps {
   children: ReactNode;
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -12,6 +13,7 @@ export interface EditToolbarProps {
 
 const EditToolbar: React.FC<EditToolbarProps> = (props) => {
   const { setRows, setRowModesModel } = props;
+  const { t } = useTranslation();
 
   const handleClick = () => {
     const id = Date.now().toString();
@@ -25,7 +27,7 @@ const EditToolbar: React.FC<EditToolbarProps> = (props) => {
   return (
     <GridToolbarContainer>
       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        {"Add"}
+        {t("add")}
       </Button>
       { props.children }
     </GridToolbarContainer>

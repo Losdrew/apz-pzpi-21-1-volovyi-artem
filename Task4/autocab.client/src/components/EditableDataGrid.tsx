@@ -16,11 +16,12 @@ import {
     GridRowsProp
 } from '@mui/x-data-grid';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EditToolbarProps } from './EditToolbar';
 
 interface EditableDataGridProps {
-  toolbar : React.ComponentType<EditToolbarProps>,
-  toolbarProps : EditToolbarProps,
+  toolbar: React.ComponentType<EditToolbarProps>,
+  toolbarProps: EditToolbarProps,
   rows: GridRowsProp;
   setRows: React.Dispatch<React.SetStateAction<GridRowsProp>>;
   initialColumns: GridColDef[];
@@ -36,6 +37,7 @@ const EditableDataGrid: React.FC<EditableDataGridProps> = ({
   handleSelectionChange
 }) => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const { t } = useTranslation();
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -72,7 +74,7 @@ const EditableDataGrid: React.FC<EditableDataGridProps> = ({
     {
       field: 'actions',
       type: 'actions',
-      headerName: "Actions",
+      headerName: t("actions"),
       width: 100,
       cellClassName: 'actions',
       getActions: ({ id }) => {
@@ -82,7 +84,7 @@ const EditableDataGrid: React.FC<EditableDataGridProps> = ({
           return [
             <GridActionsCellItem
               icon={<SaveIcon />}
-              label="Save"
+              label={t("save")}
               sx={{
                 color: 'primary.main',
               }}
@@ -90,7 +92,7 @@ const EditableDataGrid: React.FC<EditableDataGridProps> = ({
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
-              label="Cancel"
+              label={t("cancel")}
               className="textPrimary"
               onClick={handleCancelClick(id)}
               color="inherit"
@@ -101,14 +103,14 @@ const EditableDataGrid: React.FC<EditableDataGridProps> = ({
         return [
           <GridActionsCellItem
             icon={<EditIcon />}
-            label="Edit"
+            label={t("edit")}
             className="textPrimary"
             onClick={handleEditClick(id)}
             color="inherit"
           />,
           <GridActionsCellItem
             icon={<DeleteIcon />}
-            label="Delete"
+            label={t("delete")}
             onClick={handleDeleteClick(id)}
             color="inherit"
           />,
@@ -130,7 +132,7 @@ const EditableDataGrid: React.FC<EditableDataGridProps> = ({
   return (
     <Box
       sx={{
-       
+
         '& .actions': {
           color: 'primary.main',
         },

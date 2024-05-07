@@ -1,5 +1,6 @@
 import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
 import { useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import authService from '../features/authService';
 import useAuth from '../hooks/useAuth';
@@ -9,6 +10,7 @@ import { Roles } from '../interfaces/enums';
 const SignUp = () => {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [role, setRole] = useState(Roles.None);
@@ -58,19 +60,19 @@ const SignUp = () => {
         return (
           <>
             <Typography variant="h5" gutterBottom align="center" mb={2}>
-              {"Create an account"}
+              {t("createAccount")}
             </Typography>
             <Box display="flex" justifyContent="center" flexDirection="column" gap="15px" mb={2} px={10}>
               <Button variant="contained" color="primary" onClick={() => handleRoleSelection(Roles.Customer)}>
-                {"Customer"}
+                {t("customer")}
               </Button>
             </Box>
             <Box display="flex" justifyContent="center" flexDirection="column" gap="15px" mb={3} px={10}>
               <Typography variant="h6" align="center">
-                {"Already registered?"}
+                {t("alreadyRegistered")}
               </Typography>
               <Button variant="contained" color="primary" component={Link} to="/login">
-                {"Log in"}
+                {t("logIn")}
               </Button>
             </Box>
           </>
@@ -79,25 +81,25 @@ const SignUp = () => {
         return (
           <>
             <Typography variant="h5" gutterBottom align="center" mb={2}>
-              {"Enter your name"}
+              {t("enterName")}
             </Typography>
             <Box display="flex" flexDirection="column" gap="15px" mb={3} px={3}>
               <TextField
-                label={"First name"}
+                label={t("firstName")}
                 variant="outlined"
                 fullWidth
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
               />
               <TextField
-                label={"Last name"}
+                label={t("lastName")}
                 variant="outlined"
                 fullWidth
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
               />
               <TextField
-                label={"Phone number"}
+                label={t("phoneNumber")}
                 variant="outlined"
                 fullWidth
                 value={phoneNumber}
@@ -106,10 +108,10 @@ const SignUp = () => {
             </Box>
             <Box display="flex" justifyContent="space-between" flexDirection="row" mb={3} px={3}>
               <Button variant="outlined" color="primary" onClick={handleBack}>
-                {"Back"}
+                {t("back")}
               </Button>
               <Button variant="contained" color="primary" onClick={handleNext}>
-                {"Next"}
+                {t("next")}
               </Button>
             </Box>
           </>
@@ -118,18 +120,18 @@ const SignUp = () => {
         return (
           <>
             <Typography variant="h5" gutterBottom align="center" mb={2}>
-              {"Enter your email and password"}
+              {t("enterEmailAndPassword")}
             </Typography>
             <Box display="flex" flexDirection="column" gap="15px" mb={3} px={3}>
               <TextField
-                label={"Email"}
+                label={t("email")}
                 variant="outlined"
                 fullWidth
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
-                label={"Password"}
+                label={t("password")}
                 variant="outlined"
                 fullWidth
                 type="password"
@@ -139,10 +141,10 @@ const SignUp = () => {
             </Box>
             <Box display="flex" justifyContent="space-between" flexDirection="row" mb={3} px={3}>
               <Button variant="outlined" color="primary" onClick={handleBack}>
-                {"Back"}
+                {t("back")}
               </Button>
               <Button variant="contained" color="primary" onClick={handleSignUp}>
-                {"Sign up"}
+                {t("signUp")}
               </Button>
             </Box>
           </>

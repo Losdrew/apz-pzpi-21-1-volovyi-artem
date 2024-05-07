@@ -14,6 +14,7 @@ import {
     Typography
 } from '@mui/material';
 import React, { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import addressService from '../features/addressService';
 import carService from '../features/carService';
 import tripService from "../features/tripService";
@@ -24,6 +25,7 @@ import { TripInfoDto } from "../interfaces/trip";
 
 const CreateTrip = () => {
   const { auth } = useAuth();
+  const { t } = useTranslation();
 
   const [addresses, setAddresses] = useState<AddressDto[]>();
   const [trip, setTrip] = useState<TripInfoDto>();
@@ -87,108 +89,108 @@ const CreateTrip = () => {
     <Container maxWidth="xs">
       {trip ? (
         <Typography variant="h5" gutterBottom align="center" mt={4} color="primary">
-          {"Trip created successfully"}
+          {t("tripCreatedSuccessfully")}
         </Typography>
-      ) : 
-      (
-        <React.Fragment>
-          <Typography variant="h5" gutterBottom align="center" mt={2} mb={2}>
-            {"Create trip"}
-          </Typography>
-          <Paper elevation={3} style={{ padding: '30px' }}>
-            <Box>
-              <Autocomplete
-                fullWidth
-                clearOnEscape
-                id="combo-box-start-address"
-                options={addresses}
-                onChange={
-                  (event, newValue) => {
-                    setStartAddress(newValue);
+      ) :
+        (
+          <React.Fragment>
+            <Typography variant="h5" gutterBottom align="center" mt={2} mb={2}>
+              {t("createTrip")}
+            </Typography>
+            <Paper elevation={3} style={{ padding: '30px' }}>
+              <Box>
+                <Autocomplete
+                  fullWidth
+                  clearOnEscape
+                  id="combo-box-start-address"
+                  options={addresses}
+                  onChange={
+                    (event, newValue) => {
+                      setStartAddress(newValue);
+                    }
                   }
-                }
-                getOptionLabel={
-                  (option: AddressDto) => addressService.getFullAddress(option)
-                }
-                filterOptions={(options, { inputValue }) =>
-                  options.filter((option) =>
-                    addressService.getFullAddress(option).toLowerCase().includes(inputValue.toLowerCase())
-                  )
-                }
-                renderInput={
-                  (params) => <TextField {...params} label="Start Address" />
-                }
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                getOptionKey={(option) => option.id}
-              />
-            </Box>
-            <Box mt={3}>
-              <Autocomplete
-                fullWidth
-                clearOnEscape
-                id="combo-box-destination-address"
-                options={addresses}
-                onChange={
-                  (event, newValue) => {
-                    setDestinationAddress(newValue);
+                  getOptionLabel={
+                    (option: AddressDto) => addressService.getFullAddress(option)
                   }
-                }
-                getOptionLabel={
-                  (option: AddressDto) => addressService.getFullAddress(option)
-                }
-                filterOptions={(options, { inputValue }) =>
-                  options.filter((option) =>
-                    addressService.getFullAddress(option).toLowerCase().includes(inputValue.toLowerCase())
-                  )
-                }
-                renderInput={
-                  (params) => <TextField {...params} label="Destination Address" />
-                }
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                getOptionKey={(option) => option.id}
-              />
-            </Box>
-            <Box mt={3}>
-              <FormControl fullWidth>
-                <InputLabel id="car-select-label">Car</InputLabel>
-                <Select
-                  labelId="car-select-label"
-                  id="car-select"
-                  value={selectedCar}
-                  label="Car"
-                  onChange={(event) => setSelectedCar(event.target.value)}
-                >
-                  {carsForTrip?.map((car) => (
-                    <MenuItem key={car.id} value={car}>
-                      <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
-                        <Box display="flex" flexDirection="row" gap="15px">
-                          <Box display="flex" flexDirection="column-reverse" justifyContent="center">
-                            <DriveEtaIcon fontSize="large" color="primary"/>
-                          </Box>
-                          <Box display="flex" flexDirection="column" justifyContent="center">
-                            <Typography fontWeight="bold"> {car.brand + " " + car.model} </Typography>
-                            <Box display="flex">
-                              <PersonIcon font-size="small" /> {car.passengerSeatsNum}
+                  filterOptions={(options, { inputValue }) =>
+                    options.filter((option) =>
+                      addressService.getFullAddress(option).toLowerCase().includes(inputValue.toLowerCase())
+                    )
+                  }
+                  renderInput={
+                    (params) => <TextField {...params} label={t("startAddress")} />
+                  }
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionKey={(option) => option.id}
+                />
+              </Box>
+              <Box mt={3}>
+                <Autocomplete
+                  fullWidth
+                  clearOnEscape
+                  id="combo-box-destination-address"
+                  options={addresses}
+                  onChange={
+                    (event, newValue) => {
+                      setDestinationAddress(newValue);
+                    }
+                  }
+                  getOptionLabel={
+                    (option: AddressDto) => addressService.getFullAddress(option)
+                  }
+                  filterOptions={(options, { inputValue }) =>
+                    options.filter((option) =>
+                      addressService.getFullAddress(option).toLowerCase().includes(inputValue.toLowerCase())
+                    )
+                  }
+                  renderInput={
+                    (params) => <TextField {...params} label={t("destinationAddress")} />
+                  }
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionKey={(option) => option.id}
+                />
+              </Box>
+              <Box mt={3}>
+                <FormControl fullWidth>
+                  <InputLabel id="car-select-label">{t("car")}</InputLabel>
+                  <Select
+                    labelId="car-select-label"
+                    id="car-select"
+                    value={selectedCar}
+                    label={t("car")}
+                    onChange={(event) => setSelectedCar(event.target.value)}
+                  >
+                    {carsForTrip?.map((car) => (
+                      <MenuItem key={car.id} value={car}>
+                        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
+                          <Box display="flex" flexDirection="row" gap="15px">
+                            <Box display="flex" flexDirection="column-reverse" justifyContent="center">
+                              <DriveEtaIcon fontSize="large" color="primary" />
+                            </Box>
+                            <Box display="flex" flexDirection="column" justifyContent="center">
+                              <Typography fontWeight="bold"> {car.brand + " " + car.model} </Typography>
+                              <Box display="flex">
+                                <PersonIcon font-size="small" /> {car.passengerSeatsNum}
+                              </Box>
                             </Box>
                           </Box>
+                          <Box display="flex" flexDirection="column-reverse" justifyContent="center">
+                            <Typography fontWeight="bold" fontSize="22px"> {car.price?.toPrecision(3)}$ </Typography>
+                          </Box>
                         </Box>
-                        <Box display="flex" flexDirection="column-reverse" justifyContent="center">
-                          <Typography fontWeight="bold" fontSize="22px"> {car.price?.toPrecision(3)}$ </Typography>
-                        </Box>
-                      </Box>
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-            <Box display="flex" justifyContent="center" mt={3}>
-              <Button variant="contained" color="primary" onClick={handleCreateTrip}>
-                {"Create trip"}
-              </Button>
-            </Box>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box display="flex" justifyContent="center" mt={3}>
+                <Button variant="contained" color="primary" onClick={handleCreateTrip}>
+                  {t("createTrip")}
+                </Button>
+              </Box>
             </Paper>
-        </React.Fragment>
-      )}
+          </React.Fragment>
+        )}
     </Container>
   )
 };

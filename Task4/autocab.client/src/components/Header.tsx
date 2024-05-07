@@ -1,11 +1,14 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link as LinkRouter } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { Roles } from '../interfaces/enums';
+import LanguageChangerButton from './LanguageChanger';
 
 export function Header() {
+  const { t } = useTranslation();
   const { auth, setAuth } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -49,7 +52,7 @@ export function Header() {
               to="/admin-dashboard"
               sx={{ my: 2, color: 'white' }}
             >
-              {"Admin Dashboard"}
+              {t('adminDashboard')}
             </Button>
           )}
           {auth.role === Roles.Customer && (
@@ -58,7 +61,7 @@ export function Header() {
               to="/customer-trips"
               sx={{ my: 2, color: 'white' }}
             >
-              {"My Trips"}
+              {t('myTrips')}
             </Button>
           )}
           {auth.role === Roles.Customer && (
@@ -67,9 +70,12 @@ export function Header() {
               to="/create-trip"
               sx={{ my: 2, color: 'white' }}
             >
-              {"Create trip"}
+              {t('createTrip')}
             </Button>
           )}
+        </Box>
+        <Box>
+          <LanguageChangerButton />
         </Box>
         {!auth.userId && (
           <Button
@@ -80,7 +86,7 @@ export function Header() {
             component={LinkRouter}
             to="/login"
           >
-            {"Sign in"}
+            {t('signIn')}
           </Button>
         )}
         {auth.userId && (
@@ -112,10 +118,10 @@ export function Header() {
               onClose={handleMenuClose}
             >
               <MenuItem component={LinkRouter} to="/profile" onClick={handleMenuClose}>
-                {"Profile"}
+                {t('profile')}
               </MenuItem>
               <MenuItem onClick={handleLogout}>
-                {"Logout"}
+                {t('logout')}
               </MenuItem>
             </Menu>
           </Box>

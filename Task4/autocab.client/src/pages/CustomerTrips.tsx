@@ -13,6 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import SelectServicesModal from '../components/SelectServicesModal';
 import addressService from '../features/addressService';
 import tripService from '../features/tripService';
@@ -23,6 +24,7 @@ import { TripFullInfo } from '../interfaces/trip';
 
 const CustomerTrips = () => {
   const { auth } = useAuth();
+  const { t } = useTranslation();
   const { 
     CarStatusColors, 
     CarStatusLabels, 
@@ -74,18 +76,18 @@ const CustomerTrips = () => {
   return (
     <Container>
       <Typography variant="h5" gutterBottom align="center" mt={3} mb={2}>
-        {"My Trips"}
+        {t("myTrips")}
       </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>{"Date"}</TableCell>
-              <TableCell>{"Car Name"}</TableCell>
-              <TableCell>{"Car Licence Plate"}</TableCell>
-              <TableCell>{"Trip Status"}</TableCell>
-              <TableCell>{"Price"}</TableCell>
-              <TableCell>{"Actions"}</TableCell>
+              <TableCell>{t("date")}</TableCell>
+              <TableCell>{t("carName")}</TableCell>
+              <TableCell>{t("carLicencePlate")}</TableCell>
+              <TableCell>{t("tripStatus")}</TableCell>
+              <TableCell>{t("price")}</TableCell>
+              <TableCell>{t("actions")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -113,7 +115,7 @@ const CustomerTrips = () => {
                       color="primary"
                       onClick={() => handleExpand(trip.id)}
                     >
-                      {expandedTripId === trip.id ? "Hide Details" : "View Details"}
+                      {expandedTripId === trip.id ? t("hideDetails") : t("viewDetails")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -121,17 +123,17 @@ const CustomerTrips = () => {
                   <TableCell colSpan={6}>
                     <Collapse in={expandedTripId === trip.id} timeout="auto" unmountOnExit>
                       <Box>
-                        <Typography variant="h6" gutterBottom> {"Trip Info"} </Typography>
+                        <Typography variant="h6" gutterBottom> {t("tripInfo")} </Typography>
                         <Typography gutterBottom>
-                          {"Start Address"}: {addressService.getFullAddress(trip.startAddress!)}
+                          {t("startAddress")}: {addressService.getFullAddress(trip.startAddress!)}
                         </Typography>
                         <Typography gutterBottom>
-                          {"Destination Address"}: {addressService.getFullAddress(trip.destinationAddress!)}
+                          {t("destinationAddress")}: {addressService.getFullAddress(trip.destinationAddress!)}
                         </Typography>
                         {trip.car && (
                           <React.Fragment>
                             <Typography gutterBottom>
-                              {"Car Status"}: 
+                              {t("carStatus")}:
                               <span
                                 style={{
                                   marginLeft: '8px',
@@ -140,13 +142,13 @@ const CustomerTrips = () => {
                                   backgroundColor: CarStatusColors[trip.car.status!],
                                 }}
                               >
-                                {CarStatusLabels[trip.car.status!]}
+                                {t(CarStatusLabels[trip.car.status!])}
                               </span>
                             </Typography>
                           </React.Fragment>
                         )}
                         <Typography gutterBottom>
-                          {"Services"}: {trip.services?.map(service => service.name)}
+                          {t("services")}: {trip.services?.map(service => service.name)}
                         </Typography>
                       </Box>
                       <Box display="flex" flexDirection="row" justifyContent="flex-end" gap="15px">
@@ -155,16 +157,16 @@ const CustomerTrips = () => {
                             variant="contained"
                             onClick={() => handleOpenModal(trip.id)}
                           >
-                            {"Update services"}
+                            {t("updateServices")}
                           </Button>
                         )}
                         {(trip.tripStatus === TripStatus.Created || trip.tripStatus === TripStatus.InProgress) && (
                           <Button
-                          variant="outlined"
-                          color="error"
-                          onClick={() => handleCancelTrip(trip.id!)}
+                            variant="outlined"
+                            color="error"
+                            onClick={() => handleCancelTrip(trip.id!)}
                           >
-                            {"Cancel Trip"}
+                            {t("cancelTrip")}
                           </Button>
                         )}
                       </Box>

@@ -1,5 +1,6 @@
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Button } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import EditToolbar, { EditToolbarProps } from "./EditToolbar";
 
 export interface RobotEditToolbarProps extends EditToolbarProps {
@@ -8,6 +9,7 @@ export interface RobotEditToolbarProps extends EditToolbarProps {
 
 const RobotEditToolbar: React.FC<RobotEditToolbarProps> = (props) => {
   const { setRows, setRowModesModel, setModal } = props;
+  const { t } = useTranslation();
 
   const handleViewLocation = () => {
     setModal(true);
@@ -16,7 +18,7 @@ const RobotEditToolbar: React.FC<RobotEditToolbarProps> = (props) => {
   return (
     <EditToolbar setRows={setRows} setRowModesModel={setRowModesModel}>
       <Button color="primary" startIcon={<LocationOnIcon />} onClick={handleViewLocation}>
-        {"View Location"}
+        {t("viewLocation")}
       </Button>
     </EditToolbar>
   );

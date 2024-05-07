@@ -1,21 +1,22 @@
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import BusinessIcon from '@mui/icons-material/Business';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import ExploreIcon from '@mui/icons-material/Explore';
 import SensorsIcon from '@mui/icons-material/Sensors';
 import { Box, Button, Container, IconButton, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
+  const { t } = useTranslation();
+
  return (
    <Container>
      <Box textAlign="center" mt={10}>
        <Typography variant="h4" gutterBottom>
-         {"Welcome to AutoCab"}
+         {t('homePageTitle')}
        </Typography>
        <Typography variant="subtitle1" color="textSecondary" paragraph>
-         {"Unlock the Future of Transportation"}
+         {t('homePageSubtitle1')}
        </Typography>
 
        <Box mt={4}>
@@ -32,10 +33,10 @@ const Home = () => {
 
        <Box mt={5}>
          <Typography variant="h6" gutterBottom>
-           {"AutoCab - Where Innovation Meets Convenience."}
+           {t('homePageSubtitle2')}
          </Typography>
          <Typography variant="body1" paragraph>
-           {"Your Key to Stress-Free Urban Travel"}
+           {t('homePageSubtitle3')}
          </Typography>
        </Box>
 
@@ -48,7 +49,7 @@ const Home = () => {
            component={Link}
            to="/sign-up"
          >
-           {"Get Started"}
+           {t('getStarted')}
          </Button>
        </Box>
      </Box>

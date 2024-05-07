@@ -9,12 +9,14 @@ import {
     FormGroup
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import tripService from '../features/tripService';
 import useAuth from '../hooks/useAuth';
 import { ServiceInfoDto } from '../interfaces/service';
 
 const SelectServicesModal = ({ open, onClose, tripId }) => {
   const { auth } = useAuth();
+  const { t } = useTranslation();
   const [services, setServices] = useState<ServiceInfoDto[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
@@ -52,7 +54,7 @@ const SelectServicesModal = ({ open, onClose, tripId }) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{"Select services"}</DialogTitle>
+      <DialogTitle>{t("selectServices")}</DialogTitle>
       <DialogContent>
         <FormGroup>
           {services.map((service) => (
@@ -70,10 +72,10 @@ const SelectServicesModal = ({ open, onClose, tripId }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
-          {"Cancel"}
+          {t("cancel")}
         </Button>
         <Button onClick={handleUpdateServices} color="primary">
-          {"Confirm"}
+          {t("confirm")}
         </Button>
       </DialogActions>
     </Dialog>

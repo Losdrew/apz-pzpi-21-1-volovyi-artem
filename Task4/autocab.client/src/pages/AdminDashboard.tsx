@@ -1,6 +1,7 @@
 import { Alert, Box, Button, Container, Divider, Paper, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { GridColDef, GridRenderCellParams, GridRowSelectionModel, GridValueFormatterParams } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import CarEditToolbar from '../components/CarEditToolbar';
 import CarLocationModal from '../components/CarLocationModal';
 import EditToolbar from '../components/EditToolbar';
@@ -21,6 +22,7 @@ import { GridCar, GridService, GridTrip, GridUser } from '../interfaces/grid';
 import { ServiceInfoDto } from '../interfaces/service';
 
 const AdminDashboard = () => {
+  const { t } = useTranslation();
   const { auth } = useAuth();
   const { CarStatusColors, CarStatusLabels, TripStatusColors, TripStatusLabels } = useStatusConverter();
   const [cars, setCars] = useState<GridCar[]>();
@@ -230,34 +232,34 @@ const AdminDashboard = () => {
   };
 
   const userColumns: GridColDef[] = [
-    { field: 'id', headerName: "User Id", width: 170, editable: true },
-    { field: 'email', headerName: "Email", width: 170, editable: true },
-    { field: 'firstName', headerName: "First Name", width: 170, editable: true },
-    { field: 'lastName', headerName: "Last Name", width: 170, editable: true },
-    { field: 'phoneNumber', headerName: "Phone Number", width: 170, editable: true },
-    { field: 'role', headerName: "Role", width: 100, editable: true }
+    { field: 'id', headerName: t("userId"), width: 170, editable: true },
+    { field: 'email', headerName: t("email"), width: 170, editable: true },
+    { field: 'firstName', headerName: t("firstName"), width: 170, editable: true },
+    { field: 'lastName', headerName: t("lastName"), width: 170, editable: true },
+    { field: 'phoneNumber', headerName: t("phoneNumber"), width: 170, editable: true },
+    { field: 'role', headerName: t("role"), width: 100, editable: true }
   ];
 
   const tripColumns: GridColDef[] = [
-    { field: 'userId', headerName: "User Id", width: 170, editable: false },
+    { field: 'userId', headerName: t("userId"), width: 170, editable: false },
     {
       field: 'tripStatus',
-      headerName: "Status",
-        renderCell: (params: GridRenderCellParams<any, CarStatus>) => (
-          <span
-            style={{
-              padding: '5px',
-              borderRadius: '10px',
-              backgroundColor: TripStatusColors[params.value],
-            }}
-          >
-            {TripStatusLabels[params.value]}
-          </span>
-        ),
+      headerName: t("status"),
+      renderCell: (params: GridRenderCellParams<any, CarStatus>) => (
+        <span
+          style={{
+            padding: '5px',
+            borderRadius: '10px',
+            backgroundColor: TripStatusColors[params.value],
+          }}
+        >
+          {TripStatusLabels[params.value]}
+        </span>
+      ),
     },
     {
       field: 'startDateTime',
-      headerName: "Start Date",
+      headerName: t("startDate"),
       width: 170,
       valueFormatter: (params: GridValueFormatterParams<Date>) => {
         if (params != null) {
@@ -268,10 +270,21 @@ const AdminDashboard = () => {
       },
       editable: true
     },
-    { field: 'price', headerName: "Price", width: 100, editable: true },
+    {
+      field: 'price',
+      headerName: t("price"),
+      width: 100,
+      valueFormatter: (params: GridValueFormatterParams<number>) => {
+        if (params != null) {
+          return params.toPrecision(3);
+        };
+        return '';
+      },
+      editable: true
+    },
     {
       field: 'startAddress',
-      headerName: "Start Address",
+      headerName: t("startAddress"),
       width: 170,
       valueFormatter: (params: GridValueFormatterParams<AddressDto>) => {
         if (params != null) {
@@ -282,7 +295,7 @@ const AdminDashboard = () => {
     },
     {
       field: 'destinationAddress',
-      headerName: "Destination Address",
+      headerName: t("destinationAddress"),
       width: 170,
       valueFormatter: (params: GridValueFormatterParams<AddressDto>) => {
         if (params != null) {
@@ -293,7 +306,7 @@ const AdminDashboard = () => {
     },
     {
       field: 'carBrand',
-      headerName: "Car Brand",
+      headerName: t("carBrand"),
       width: 170,
       renderCell: (params) => {
         return params?.row?.car.brand;
@@ -302,7 +315,7 @@ const AdminDashboard = () => {
     },
     {
       field: 'carModel',
-      headerName: "Car Model",
+      headerName: t("carModel"),
       width: 170,
       renderCell: (params) => {
         return params?.row?.car.model;
@@ -311,7 +324,7 @@ const AdminDashboard = () => {
     },
     {
       field: 'carLicencePlate',
-      headerName: "Car Licence Plate",
+      headerName: t("carLicencePlate"),
       width: 100,
       renderCell: (params) => {
         return params?.row?.car.licencePlate;
@@ -320,14 +333,14 @@ const AdminDashboard = () => {
     },
     {
       field: 'services',
-      headerName: "Services",
+      headerName: t("services"),
       width: 170,
       renderCell: (params: GridRenderCellParams<any, ServiceInfoDto[]>) => (
         <ul className="flex"
           style={{
             margin: 0,
             padding: '0px 0px 0px 5px',
-        }}>
+          }}>
           {params?.value?.map((service, id) => (
             <li key={id}>{service.name}</li>
           ))}
@@ -337,19 +350,19 @@ const AdminDashboard = () => {
   ];
 
   const serviceColumns: GridColDef[] = [
-    { field: 'name', headerName: "Name", width: 170, editable: true },
-    { field: 'command', headerName: "Command", width: 170, editable: true }
+    { field: 'name', headerName: t("name"), width: 170, editable: true },
+    { field: 'command', headerName: t("command"), width: 170, editable: true }
   ];
 
   const carColumns: GridColDef[] = [
-    { field: 'brand', headerName: "Brand", width: 170, editable: true },
-    { field: 'model', headerName: "Model", width: 170, editable: true },
-    { field: 'licencePlate', headerName: "Licence Plate", width: 100, editable: true },
-    { field: 'passengerSeatsNum', headerName: "Passenger Seats", width: 100, editable: true },
-    { field: 'deviceId', headerName: "Device ID", width: 170, editable: true },
+    { field: 'brand', headerName: t("brand"), width: 170, editable: true },
+    { field: 'model', headerName: t("model"), width: 170, editable: true },
+    { field: 'licencePlate', headerName: t("licencePlate"), width: 100, editable: true },
+    { field: 'passengerSeatsNum', headerName: t("passengerSeats"), width: 100, editable: true },
+    { field: 'deviceId', headerName: t("deviceId"), width: 170, editable: true },
     {
       field: 'temperature',
-      headerName: "Temperature",
+      headerName: t("temperature"),
       width: 100,
       valueFormatter: (params: GridValueFormatterParams<number>) => {
         if (params && params.value != null) {
@@ -360,7 +373,7 @@ const AdminDashboard = () => {
     },
     {
       field: 'fuel',
-      headerName: "Fuel",
+      headerName: t("fuel"),
       width: 100,
       valueFormatter: (params: GridValueFormatterParams<number>) => {
         if (params && params.value != null) {
@@ -369,20 +382,20 @@ const AdminDashboard = () => {
         return '';
       }
     },
-    { 
+    {
       field: 'status',
-      headerName: "Status",
+      headerName: t("status"),
       renderCell: (params: GridRenderCellParams<any, CarStatus>) => (
-      <span
-        style={{
-          padding: '5px',
-          borderRadius: '10px',
-          backgroundColor: CarStatusColors[params.value],
-        }}
-      >
-        {CarStatusLabels[params.value]}
-      </span>
-    ),
+        <span
+          style={{
+            padding: '5px',
+            borderRadius: '10px',
+            backgroundColor: CarStatusColors[params.value],
+          }}
+        >
+          {CarStatusLabels[params.value]}
+        </span>
+      ),
     }
   ];
 
@@ -393,22 +406,22 @@ const AdminDashboard = () => {
   return (
     <Container>
       <Typography variant="h5" gutterBottom align="center" mt={3} mb={2}>
-        {"Administrator dashboard"}
+        {t("adminDashboard")}
       </Typography>
       <Paper elevation={3} style={{ padding: '20px', paddingBottom: '20px' }}>
         <Box mb={2} display="flex" flexDirection="column">
           <Typography variant="h6" gutterBottom mb={2}>
-            {"Export/import current system data"}
+            {t("exportImportData")}
           </Typography>
           <Box mb={2} display="flex" flexDirection="row" gap="20px">
             <Button variant="contained" color="primary" onClick={handleExportData}>
-              {"Export database"}
+              {t("exportDatabase")}
             </Button>
             <Button
               variant="contained"
               component="label"
             >
-              {"Import database"}
+              {t("importDatabase")}
               <input
                 type="file"
                 hidden
@@ -419,16 +432,16 @@ const AdminDashboard = () => {
         </Box>
         <Divider />
         <Typography variant="h6" gutterBottom mt={2}>
-          {"Certificate management"}
+          {t("certificateManagement")}
         </Typography>
         <Table sx={{ mb: 2 }}>
           <TableHead>
             <TableRow>
-              <TableCell>{"Subject"}</TableCell>
-              <TableCell>{"Issuer"}</TableCell>
-              <TableCell>{"Issued Date"}</TableCell>
-              <TableCell>{"Expiry Date"}</TableCell>
-              <TableCell>{"Thumbprint"}</TableCell>
+              <TableCell>{t("subject")}</TableCell>
+              <TableCell>{t("issuer")}</TableCell>
+              <TableCell>{t("issuedDate")}</TableCell>
+              <TableCell>{t("expiryDate")}</TableCell>
+              <TableCell>{t("thumbprint")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -443,13 +456,13 @@ const AdminDashboard = () => {
         </Table>
         <Box mb={2} display="flex" flexDirection="row" gap="20px">
           <Button variant="contained" color="primary" onClick={handleExportCertificate}>
-            {"Export certificate"}
+            {t("exportCertificate")}
           </Button>
           <Button
             variant="contained"
             component="label"
           >
-            {"Import certificate"}
+            {t("importCertificate")}
             <input
               type="file"
               hidden
@@ -459,7 +472,7 @@ const AdminDashboard = () => {
         </Box>
         <Divider />
         <Typography variant="h6" gutterBottom mt={2} mb={2}>
-          {"Users"}
+          {t("users")}
         </Typography>
         <EditableDataGrid
           toolbar={EditToolbar}
@@ -474,7 +487,7 @@ const AdminDashboard = () => {
         />
         <Divider />
         <Typography variant="h6" gutterBottom mt={2} mb={2}>
-          {"Trips"}
+          {t("trips")}
         </Typography>
         <EditableDataGrid
           toolbar={EditToolbar}
@@ -489,7 +502,7 @@ const AdminDashboard = () => {
         />
         <Divider />
         <Typography variant="h6" gutterBottom mt={2} mb={2}>
-          {"Services"}
+          {t("services")}
         </Typography>
         <EditableDataGrid
           toolbar={EditToolbar}
@@ -504,7 +517,7 @@ const AdminDashboard = () => {
         />
         <Divider />
         <Typography variant="h6" gutterBottom mt={2} mb={2}>
-          {"Cars"}
+          {t("cars")}
         </Typography>
         <EditableDataGrid
           toolbar={CarEditToolbar}
@@ -516,12 +529,12 @@ const AdminDashboard = () => {
           rows={cars || []}
           setRows={setCars}
           initialColumns={carColumns}
-          handleSelectionChange={ handleSelectionChange }
+          handleSelectionChange={handleSelectionChange}
         />
         <Divider />
-        <Box sx={{mt: 4}} display="flex" justifyContent="center">
+        <Box sx={{ mt: 4 }} display="flex" justifyContent="center">
           <Button variant="contained" color="primary" onClick={saveChanges}>
-            {"Save changes"}
+            {t("saveChanges")}
           </Button>
           <Snackbar
             open={saveStatus !== null}
@@ -535,8 +548,9 @@ const AdminDashboard = () => {
               onClose={handleCloseSnackbar}
             >
               {saveStatus === 'success' || saveStatus === null
-                ? "Changes saved successfully"
-                : "Error saving changes"}
+                ? t("changesSaved")
+                : t("errorSavingChanges")
+              }
             </Alert>
           </Snackbar>
         </Box>
