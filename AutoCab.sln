@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCab.Db", "Task2\apz-pzp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCab.Shared", "Task2\apz-pzpi-21-1-volovyi-artem-task2\AutoCab.Shared\AutoCab.Shared.csproj", "{4EB8E819-F586-44E2-B447-4F36A0BD7ECC}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "autocab.client", "Task4\autocab.client\autocab.client.esproj", "{B757D623-B292-4485-B8EA-849FA4CD2362}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "autocab.client", "Task4\apz-pzpi-21-1-volovyi-artem-task4\autocab.client\autocab.client.esproj", "{B757D623-B292-4485-B8EA-849FA4CD2362}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
