@@ -3,11 +3,11 @@ import { Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import EditToolbar, { EditToolbarProps } from "./EditToolbar";
 
-export interface RobotEditToolbarProps extends EditToolbarProps {
+export interface CarEditToolbarProps extends EditToolbarProps {
   setModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const RobotEditToolbar: React.FC<RobotEditToolbarProps> = (props) => {
+const CarEditToolbar: React.FC<CarEditToolbarProps> = (props) => {
   const { setRows, setRowModesModel, setModal } = props;
   const { t } = useTranslation();
 
@@ -24,4 +24,4 @@ const RobotEditToolbar: React.FC<RobotEditToolbarProps> = (props) => {
   );
 };
 
-export default RobotEditToolbar;
+export default CarEditToolbar;
