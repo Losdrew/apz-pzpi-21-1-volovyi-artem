@@ -62,7 +62,7 @@ const CustomerTrips = () => {
 
   useEffect(() => {
     fetchTrips();
-  }, [auth.bearer]);
+  }, [auth.bearer, trips]);
 
   const handleCancelTrip = async (tripId: string) => {
     try {
