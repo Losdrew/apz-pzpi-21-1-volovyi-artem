@@ -1,12 +1,15 @@
-import { TripStatus, CarStatus } from '../interfaces/enums';
+import { useTranslation } from 'react-i18next';
+import { CarStatus, TripStatus } from '../interfaces/enums';
 
 const useStatusConverter = () => {
+  const { t } = useTranslation();
+
   const TripStatusLabels = {
-    [TripStatus.Created]: "Created",
-    [TripStatus.InProgress]: "In Progress",
-    [TripStatus.WaitingForPassenger]: "Waiting for Passenger",
-    [TripStatus.Completed]: "Completed",
-    [TripStatus.Cancelled]: "Cancelled",
+    [TripStatus.Created]: t("created"),
+    [TripStatus.InProgress]: t("inProgress"),
+    [TripStatus.WaitingForPassenger]: t("waitingForPassenger"),
+    [TripStatus.Completed]: t("completed"),
+    [TripStatus.Cancelled]: t("cancelled"),
   };
 
   const TripStatusColors = {
@@ -18,13 +21,13 @@ const useStatusConverter = () => {
   };
 
   const CarStatusLabels = {
-    [CarStatus.Inactive]: "Inactive",
-    [CarStatus.Idle]: "Idle",
-    [CarStatus.EnRoute]: "En Route",
-    [CarStatus.OnTrip]: "On Trip",
-    [CarStatus.WaitingForPassenger]: "Waiting for Passenger",
-    [CarStatus.Maintenance]: "Maintenance",
-    [CarStatus.Danger]: "Danger",
+    [CarStatus.Inactive]: t("inactive"),
+    [CarStatus.Idle]: t("idle"),
+    [CarStatus.EnRoute]: t("enRoute"),
+    [CarStatus.OnTrip]: t("onTrip"),
+    [CarStatus.WaitingForPassenger]: t("waitingForPassenger"),
+    [CarStatus.Maintenance]: t("maintenance"),
+    [CarStatus.Danger]: t("danger"),
   };
 
   const CarStatusColors = {
