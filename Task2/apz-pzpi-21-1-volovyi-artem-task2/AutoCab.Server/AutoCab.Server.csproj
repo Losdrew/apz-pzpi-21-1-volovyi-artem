@@ -41,4 +41,8 @@
     <ProjectReference Include="..\AutoCab.Shared\AutoCab.Shared.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="Publish">
+    <Exec Command="xcopy /Y /R /E &quot;$(SolutionDir)\Task4\apz-pzpi-21-1-volovyi-artem-task4\autocab.client\dist\*&quot; &quot;$(PublishDir)wwwroot\&quot;" />
+  </Target>
+
 </Project>

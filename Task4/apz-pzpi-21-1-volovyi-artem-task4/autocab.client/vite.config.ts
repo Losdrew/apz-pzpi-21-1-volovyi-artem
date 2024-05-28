@@ -54,6 +54,9 @@ export default defineConfig({
             cert: fs.readFileSync(certFilePath),
         }
     },
+    build: {
+        outDir: 'dist'
+    },
     optimizeDeps: {
         include: ['@emotion/styled'],
     },
